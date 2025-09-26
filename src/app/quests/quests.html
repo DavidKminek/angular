@@ -1,10 +1,9 @@
-<div class="quests">
-    <h2>Quests List</h2>
-    <ul>
-      <li *ngFor="let quest of quests">
-        <strong>{{ quest.title }}</strong> - {{ quest.description }}
-        <span *ngIf="quest.completed">(Completed)</span>
-      </li>
-    </ul>
-  </div>
-  
+<h2>Quest List</h2>
+
+<ul>
+  @for (quest of quests; track quest.id; let i = $index) {
+    <app-quest-item [quest]="quest" [index]="i"></app-quest-item>
+  } @empty {
+    <li>No quests available.</li>
+  }
+</ul>
