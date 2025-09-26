@@ -1,0 +1,12 @@
+<li>
+    <strong>{{ index() + 1 }}. {{ quest().title }}</strong><br>
+    <em>{{ quest().description }}</em><br>
+    XP: {{ quest().xp }}
+  
+    @if (quest().xp > 100) {
+      <span style="color: red; font-weight: bold;"> - MEGA XP!</span>
+    } @else if (quest().xp > 50) {
+      <span style="color: green; font-weight: bold;"> - SUPER XP!</span>
+    }
+  </li>
+  
