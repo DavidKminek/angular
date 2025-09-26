@@ -1,5 +1,7 @@
 <h2>Quest List</h2>
 
+<button (click)="addQuest()">Pridať nový quest</button>
+
 <ul>
   @for (quest of quests; track quest.id; let i = $index) {
     <app-quest-item [quest]="quest" [index]="i"></app-quest-item>
