@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 export interface Quest {
   id: number;
@@ -14,6 +14,12 @@ export interface Quest {
   styleUrls: ['./quest-item.css']
 })
 export class QuestItem {
-  quest = input.required<Quest>();      
-  index = input.required<number>(); 
+  quest = input.required<Quest>();
+  index = input.required<number>();
+
+  delete = output<number>(); // správne použitie
+
+  onDelete() {
+    this.delete.emit(this.quest().id);
+  }
 }

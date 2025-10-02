@@ -1,10 +1,14 @@
 <h2>Quest List</h2>
 
-<button (click)="addQuest()">Pridať nový quest</button>
+<button (click)="addQuest()" style="margin-bottom: 15px; padding: 10px 20px;">Pridať nový quest</button>
 
-<ul>
-  @for (quest of quests; track quest.id; let i = $index) {
-    <app-quest-item [quest]="quest" [index]="i"></app-quest-item>
+<ul style="list-style: none; padding: 0;">
+  @for (quest of quests(); track quest.id; let i = $index) {
+    <app-quest-item 
+      [quest]="quest" 
+      [index]="i" 
+      (delete)="deleteQuest($event)">
+    </app-quest-item>
   } @empty {
     <li>No quests available.</li>
   }
