@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
-import { QuestItem, Quest } from './quests-item';
+import { Component } from '@angular/core';
+import { QuestItem } from './quests-item';
+import { QuestsService, Quest } from './quest.service';
 
 @Component({
   selector: 'app-quests',
@@ -9,24 +10,16 @@ import { QuestItem, Quest } from './quests-item';
   styleUrls: ['./quests.css']
 })
 export class Quests {
-  quests = signal<Quest[]>([
-    { id: 1, title: 'Find the Lost Sword', description: 'Retrieve the legendary sword from the ancient ruins.', xp: 40 },
-    { id: 2, title: 'Rescue the Villagers', description: 'Save the villagers captured by goblins.', xp: 120 },
-    { id: 3, title: 'Collect Herbs', description: 'Gather 10 healing herbs for the village healer.', xp: 60 }
-  ]);
+  // služba sa injektuje cez konštruktor
+  constructor(private questsService: QuestsService) {}
+
+  quests = this.questsService.getQuests();
 
   addQuest() {
-    const maxId = this.quests().reduce((max, q) => Math.max(max, q.id), 0);
-    const newQuest: Quest = {
-      id: maxId + 1,
-      title: `New Quest #${maxId + 1}`,
-      description: 'This is a newly added quest.',
-      xp: 75
-    };
-    this.quests.set([...this.quests(), newQuest]);
+    this.questsService.addQuest();
   }
 
-  deleteQuest = (id: number) => {
-    this.quests.set(this.quests().filter(q => q.id !== id));
+  deleteQuest(id: number) {
+    this.questsService.deleteQuest(id);
   }
 }

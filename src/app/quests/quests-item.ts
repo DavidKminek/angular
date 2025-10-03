@@ -17,7 +17,7 @@ export class QuestItem {
   quest = input.required<Quest>();
   index = input.required<number>();
 
-  delete = output<number>(); // správne použitie
+  delete = output<number>(); 
 
   onDelete() {
     this.delete.emit(this.quest().id);
