@@ -10,7 +10,7 @@ import { QuestsService, Quest } from './quest.service';
   styleUrls: ['./quests.css']
 })
 export class Quests {
-  // služba sa injektuje cez konštruktor
+
   constructor(private questsService: QuestsService) {}
 
   quests = this.questsService.getQuests();
