@@ -1,3 +1,11 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
-<app-quests></app-quests>
+<h1>Lifecycle Demo</h1>
+
+<button (click)="toggleQuests()">
+  {{ showQuests ? 'Skryť Quests komponent' : 'Zobraziť Quests komponent' }}
+</button>
+
+<hr>
+
+@if (showQuests) {
+  <app-quests></app-quests>
+}

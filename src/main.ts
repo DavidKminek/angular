@@ -1,8 +1,8 @@
-// main.ts
+
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideProtractorTestingSupport } from '@angular/platform-browser';
-import { AppComponent } from './app/app'; // Corrected
+import { App } from './app/app'; 
 
-bootstrapApplication(AppComponent, {
+bootstrapApplication(App, {
   providers: [provideProtractorTestingSupport()],
 }).catch((err) => console.error(err));

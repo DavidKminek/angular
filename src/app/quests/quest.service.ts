@@ -8,9 +8,13 @@ export interface Quest {
 }
 
 @Injectable({
-  providedIn: 'root' 
+  providedIn: 'root'
 })
 export class QuestsService {
+  constructor() {
+    console.log('Service instance created.');
+  }
+
   private questsSignal = signal<Quest[]>([
     { id: 1, title: 'Find the Lost Sword', description: 'Retrieve the legendary sword from the ancient ruins.', xp: 40 },
     { id: 2, title: 'Rescue the Villagers', description: 'Save the villagers captured by goblins.', xp: 120 },
