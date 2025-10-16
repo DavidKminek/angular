@@ -1,4 +1,8 @@
-<header class="header">
-  <img src="assets/logo.svg" alt="Logo" class="logo" />
-  <h1>{{ description }}</h1>
+<header class="app-header">
+  <h1>Quest Manager</h1>
+
+  <nav class="menu">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a routerLink="/quests" routerLinkActive="active">Quests</a>
+  </nav>
 </header>
