@@ -1,32 +1,30 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { QuestItem } from './quests-item';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { QuestsService } from './quest.service';
+import { Quest } from './quest-interface';
 
 @Component({
   selector: 'app-quests',
   standalone: true,
-  imports: [QuestItem],
+  imports: [CommonModule, RouterLink],
   templateUrl: './quests.html',
   styleUrls: ['./quests.css']
 })
-export class Quests implements OnInit, OnDestroy {
-  constructor(private questsService: QuestsService) {}
+export class Quests {
+  quests: Quest[];
 
-  quests = this.questsService.getQuests();
+  constructor(private questsService: QuestsService) {
+    this.quests = questsService.getQuests();
+  }
 
   addQuest() {
     this.questsService.addQuest();
+    this.quests = this.questsService.getQuests();
   }
 
   deleteQuest(id: number) {
     this.questsService.deleteQuest(id);
-  }
-
-  ngOnInit() {
-    console.log('Quests component initialized.');
-  }
-
-  ngOnDestroy() {
-    console.log('Quests component destroyed.');
+    this.quests = this.questsService.getQuests();
   }
 }

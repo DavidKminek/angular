@@ -1,15 +1,17 @@
-<h2>Quest List</h2>
+<h2>Available Quests</h2>
 
-<button (click)="addQuest()" style="margin-bottom: 15px; padding: 10px 20px;">Pridať nový quest</button>
+<button (click)="addQuest()">Add Quest</button>
 
-<ul style="list-style: none; padding: 0;">
-  @for (quest of quests(); track quest.id; let i = $index) {
-    <app-quest-item 
-      [quest]="quest" 
-      [index]="i" 
-      (delete)="deleteQuest($event)">
-    </app-quest-item>
-  } @empty {
-    <li>No quests available.</li>
+<ul>
+  @for (quest of quests; track quest.id) {
+    <li class="quest-item">
+      <a [routerLink]="['/quests', quest.id]">
+        <h3>{{ quest.title }}</h3>
+        <p>{{ quest.description }}</p>
+        <p><strong>XP:</strong> {{ quest.xp }}</p>
+        <img *ngIf="quest.imageUrl" [src]="quest.imageUrl" alt="{{ quest.title }}" class="quest-image">
+      </a>
+      <button (click)="deleteQuest(quest.id)">Delete</button>
+    </li>
   }
 </ul>

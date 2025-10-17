@@ -1,0 +1,35 @@
+.quest-item {
+  list-style: none;
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: box-shadow 0.2s;
+  position: relative;
+}
+
+.quest-item:hover {
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.quest-item a {
+  text-decoration: none; 
+  color: inherit;
+  display: block; 
+}
+
+.quest-item a:hover {
+  color: #007bff; 
+}
+
+.quest-image {
+  max-width: 150px;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+}
+
+.quest-item button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}

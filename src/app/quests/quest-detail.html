@@ -1,0 +1,11 @@
+<div *ngIf="quest; else notFound" class="quest-detail">
+  <h2>{{ quest.title }}</h2>
+  <img *ngIf="quest.imageUrl" [src]="quest.imageUrl" alt="{{ quest.title }}" class="quest-image">
+  <p>{{ quest.description }}</p>
+  <p><strong>XP:</strong> {{ quest.xp }}</p>
+  <p *ngIf="quest.difficulty"><strong>Difficulty:</strong> {{ quest.difficulty }}</p>
+</div>
+
+<ng-template #notFound>
+  <p>Quest sa nenašiel.</p>
+</ng-template>

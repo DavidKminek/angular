@@ -5,7 +5,10 @@ export interface Quest {
   title: string;
   description: string;
   xp: number;
+  imageUrl?: string; 
+  difficulty?: 'easy' | 'medium' | 'hard'; 
 }
+
 
 @Component({
   selector: 'app-quest-item',
