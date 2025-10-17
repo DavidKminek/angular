@@ -3,6 +3,6 @@ export interface Quest {
   title: string;
   description: string;
   xp: number;
-  imageUrl?: string; // voliteľný obrázok
-  difficulty?: 'easy' | 'medium' | 'hard'; // voliteľný atribút
+  imageUrl?: string; 
+  difficulty?: 'easy' | 'medium' | 'hard'; 
 }
