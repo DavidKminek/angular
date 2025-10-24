@@ -1,0 +1,18 @@
+<div class="players-container">
+  <h2>Players ({{ playersService.players().length }})</h2>
+
+  <button (click)="addPlayer()">➕ Add Player</button>
+
+  <div class="players-list">
+    @for (player of playersService.players(); track player.id) {
+      <div class="player-card">
+        <h3>{{ player.nickname }}</h3>
+        <p>Level: {{ player.level }}</p>
+        <p *ngIf="player.clan">Clan: {{ player.clan }}</p>
+
+        <button [routerLink]="['/players', player.id]">View Details</button>
+        <button (click)="deletePlayer(player.id)">❌ Remove</button>
+      </div>
+    }
+  </div>
+</div>
