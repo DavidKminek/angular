@@ -1,0 +1,10 @@
+<h2>{{ clan?.name }}</h2>
+<p>{{ clan?.description }}</p>
+<p>Members ({{ clan?.members.length }}/{{ clan?.capacity }}):</p>
+<ul>
+  <li *ngFor="let member of clan?.members">
+    {{ member.nickname }}
+    <button (click)="removeMember(member.id)">Remove</button>
+    <a [routerLink]="['/players', member.id]">Detail</a>
+  </li>
+</ul>

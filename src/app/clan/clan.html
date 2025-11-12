@@ -1,0 +1,9 @@
+<h2>Clans</h2>
+<button (click)="addClan()">Add Clan</button>
+<ul>
+  <li *ngFor="let clan of clans()">
+    <strong>{{ clan.name }}</strong> ({{ clan.members.length }}/{{ clan.capacity }})
+    <button (click)="removeClan(clan.id)">Delete</button>
+    <button (click)="goToDetail(clan.id)">Detail</button>
+  </li>
+</ul>

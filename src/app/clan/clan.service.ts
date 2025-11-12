@@ -1,36 +1,41 @@
 import { Injectable, signal } from '@angular/core';
 import { Clan } from './clan.interface';
+import { Player } from '../players/player.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ClansService {
-  clans = signal<Clan[]>([
-    { id: 1, name: 'Iceborn', description: 'Frost warriors', capacity: 10, image: '', memberIds: [1] }
-  ]);
+  private clans = signal<Clan[]>([]);
 
-  addClan(): Clan {
-    const nextId = (this.clans().length ? Math.max(...this.clans().map(c => c.id)) : 0) + 1;
-    const newClan: Clan = { id: nextId, name: `Clan ${nextId}`, description: '', capacity: 5, image: '', memberIds: [] };
-    this.clans.update(cs => [...cs, newClan]);
-    return newClan;
+  getAll() {
+    return this.clans;
   }
 
-  deleteClan(id: number) {
-    this.clans.update(cs => cs.filter(c => c.id !== id));
-  }
-
-  getClanById(id: number) {
+  getById(id: number) {
     return this.clans().find(c => c.id === id);
   }
 
-  addMember(clanId: number, playerId: number): boolean {
-    const clan = this.getClanById(clanId);
-    if (!clan) return false;
-    if (clan.memberIds.length >= clan.capacity) return false;
-    this.clans.update(cs => cs.map(c => c.id === clanId ? ({ ...c, memberIds: [...c.memberIds, playerId] }) : c));
-    return true;
+  addClan(clan: Clan) {
+    this.clans.update(curr => [...curr, clan]);
   }
 
-  removeMember(clanId: number, playerId: number) {
-    this.clans.update(cs => cs.map(c => c.id === clanId ? ({ ...c, memberIds: c.memberIds.filter(id => id !== playerId) }) : c));
+  removeClan(id: number) {
+    this.clans.update(curr => curr.filter(c => c.id !== id));
+  }
+
+  addPlayer(clanId: number, player: Player) {
+    const clan = this.getById(clanId);
+    if (!clan) return;
+    if (!clan.members) clan.members = [];
+    if (clan.members.length >= clan.capacity) return;
+    clan.members.push(player);
+    this.clans.update(curr => [...curr]);
+  }
+
+  removePlayer(clanId: number, playerId: number) {
+    const clan = this.getById(clanId);
+    if (!clan || !clan.members) return;
+    clan.members = clan.members.filter(p => p.id !== playerId);
+    this.clans.update(curr => [...curr]);
   }
 }
+  
