@@ -1,17 +1,18 @@
-<li style="position: relative; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
-  <strong>{{ index() + 1 }}. {{ quest().title }}</strong><br>
-  <em>{{ quest().description }}</em><br>
-  XP: {{ quest().xp }}
+@if (quest) {
+  <div class="quest-detail">
+    <h2>{{ quest.title }}</h2>
 
-  @if (quest().xp > 100) {
-    <span style="color: red; font-weight: bold;"> - MEGA XP!</span>
-  } @else if (quest().xp > 50) {
-    <span style="color: green; font-weight: bold;"> - SUPER XP!</span>
-  }
+    @if (quest.imageUrl) {
+      <img [src]="quest.imageUrl" alt="{{ quest.title }}" class="quest-image">
+    }
 
-  
-  <button (click)="onDelete()" 
-          style="position: absolute; right: 10px; top: 10px; background:rgb(197, 0, 237); height: 30px; width: 30px;">
-    ×
-  </button>
-</li>
+    <p>{{ quest.description }}</p>
+    <p><strong>XP:</strong> {{ quest.xp }}</p>
+
+    @if (quest.difficulty) {
+      <p><strong>Difficulty:</strong> {{ quest.difficulty }}</p>
+    }
+  </div>
+} @else {
+  <p>Quest sa nenašiel.</p>
+}

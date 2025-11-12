@@ -1,18 +1,29 @@
 <h2>Available Quests</h2>
-<p>Total quests: {{ quests().length }}</p>
+<p>Total quests: {{ questsService.quests().length }}</p>
 
-<button (click)="addQuest()">Add Quest</button>
+<button (click)="addQuest()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded mb-4">
+  + Add Quest
+</button>
 
-<ul>
-  @for (quest of quests(); track quest.id) {
-    <li class="quest-item">
-      <a [routerLink]="['/quests', quest.id]">
-        <h3>{{ quest.title }}</h3>
-        <p>{{ quest.description }}</p>
-        <p><strong>XP:</strong> {{ quest.xp }}</p>
-        <img *ngIf="quest.imageUrl" [src]="quest.imageUrl" alt="{{ quest.title }}" class="quest-image">
-      </a>
-      <button (click)="deleteQuest(quest.id)">Delete</button>
-    </li>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  @for (quest of questsService.quests(); track quest.id) {
+    <div
+      class="p-4 bg-gray-800 text-white rounded-xl shadow hover:bg-gray-700 transition cursor-pointer"
+      [routerLink]="['/quests', quest.id]"
+    >
+      <img *ngIf="quest.imageUrl" [src]="quest.imageUrl" alt="{{ quest.title }}" class="w-full h-40 object-cover rounded mb-2" />
+      <h3 class="text-xl font-bold">{{ quest.title }}</h3>
+      <p>{{ quest.description }}</p>
+      <p><strong>XP:</strong> {{ quest.xp }}</p>
+
+      <button
+        (click)="deleteQuest(quest.id); $event.stopPropagation()"
+        class="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+      >
+        Delete
+      </button>
+    </div>
+  } @empty {
+    <p>No quests available.</p>
   }
-</ul>
+</div>

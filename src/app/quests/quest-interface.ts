@@ -3,6 +3,6 @@ export interface Quest {
   title: string;
   description: string;
   xp: number;
-  imageUrl?: string; 
-  difficulty?: 'easy' | 'medium' | 'hard'; 
+  imageUrl?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
 }

@@ -1,0 +1,16 @@
+<div *ngIf="player; else notFound" class="p-6 text-center">
+
+  <h2 class="text-3xl font-bold mb-2">{{ player.nickname }}</h2>
+  <p class="text-gray-400 text-lg mb-1">Level: {{ player.level }}</p>
+  <p class="text-gray-400 mb-4">Clan: {{ player.clan || 'No Clan' }}</p>
+
+  <a
+    routerLink="/players"
+    class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+    >← Back to Players</a
+  >
+</div>
+
+<ng-template #notFound>
+  <p class="text-center text-red-500 text-xl mt-6">Player not found!</p>
+</ng-template>
