@@ -1,35 +1,97 @@
-.quest-item {
-  list-style: none;
-  margin: 1rem 0;
-  border: 1px solid #ccc;
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+p {
+  font-size: 1rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+
+button {
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+button.bg-green-500 {
+  background-color: #22c55e;
+  color: white;
+}
+
+button.bg-green-500:hover {
+  background-color: #16a34a;
+}
+
+button.bg-red-500 {
+  background-color: #ef4444;
+  color: white;
+}
+
+button.bg-red-500:hover {
+  background-color: #b91c1c;
+}
+
+button.rounded {
+  border-radius: 0.5rem;
+}
+
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+div[p-4] {
   padding: 1rem;
-  border-radius: 8px;
-  transition: box-shadow 0.2s;
-  position: relative;
 }
 
-.quest-item:hover {
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+div.bg-gray-800 {
+  background-color: #3b3b3b;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.quest-item a {
-  text-decoration: none; 
-  color: inherit;
-  display: block; 
+div.bg-gray-800:hover {
+  background-color: #374151;
+  transform: translateY(-3px);
 }
 
-.quest-item a:hover {
-  color: #007bff; 
+h3.text-xl {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
-.quest-image {
-  max-width: 150px;
+p strong {
+  font-weight: 600;
+}
+
+div.bg-gray-800 button {
   margin-top: 0.5rem;
-  border-radius: 4px;
-}
-
-.quest-item button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
 }

@@ -1,0 +1,88 @@
+/* clan-detail.css */
+:host {
+  display: block;
+  max-width: 700px;
+  margin: 2rem auto;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+}
+
+h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 0.75rem;
+  color: #4b5563;
+}
+
+select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db; 
+  margin-right: 0.5rem;
+  font-size: 0.95rem;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button.add-btn {
+  background-color: #10b981; 
+  color: white;
+}
+
+button.remove-btn {
+  background-color: #ef4444; 
+  color: white;
+  margin-left: 0.5rem;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 0.5rem;
+}
+
+li {
+  background-color: #f3f4f6;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+li span {
+  color: #3b82f6; 
+  text-decoration: underline;
+}
+
+li span:hover {
+  color: #2563eb;
+}

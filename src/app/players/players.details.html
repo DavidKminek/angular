@@ -1,28 +1,26 @@
 <div class="player-detail" *ngIf="player">
   <h2>{{ player.nickname }} (Level {{ player.level }})</h2>
 
-  <div>
-    Clan: 
-    <span *ngIf="clan; else noClan" class="clan-link" (click)="goToClan()">
-      {{ clan.name }}
-    </span>
-    <ng-template #noClan>-</ng-template>
+  <div *ngIf="clan">
+    Clan: <span class="clan-link" (click)="goToClan()">{{ clan.name }}</span>
+  </div>
+  <div *ngIf="!clan">
+    Clan: -
   </div>
 
   <h3>Questy hráča</h3>
   <ul>
     <li *ngFor="let q of player.quests">
-      {{ q.title }} <span *ngIf="q.xp">(XP: {{ q.xp }})</span>
+      <a [routerLink]="['/quests', q.id]">{{ q.title }}</a> (XP: {{ q.xp }})
       <button (click)="removeQuest(q.id)">Odstrániť</button>
     </li>
     <li *ngIf="!player.quests || player.quests.length === 0">Žiadne questy</li>
   </ul>
 
-  <div class="add-quest">
-    <select [(ngModel)]="selectedQuestId">
-      <option [ngValue]="undefined">-- Vyber quest --</option>
-      <option *ngFor="let q of allQuests" [value]="q.id">{{ q.title }}</option>
-    </select>
-    <button (click)="addQuest()">Pridať quest</button>
-  </div>
+  <h4>Pridať nový quest</h4>
+  <select [(ngModel)]="selectedQuestId">
+    <option [ngValue]="undefined">-- Vyber quest --</option>
+    <option *ngFor="let q of allQuests" [ngValue]="q.id">{{ q.title }}</option>
+  </select>
+  <button (click)="addQuest()">Pridať quest</button>
 </div>

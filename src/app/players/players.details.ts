@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PlayerService, Player, QuestStub } from './players.service';
 import { ClansService } from '../clan/clan.service';
 import { QuestsService } from '../quests/quest.service';
 import { Clan } from '../clan/clan.interface';
-import { Quest } from './player.interface';
-import { FormsModule } from '@angular/forms';
+import { Quest } from '../quests/quest-interface';
 
 @Component({
   selector: 'app-player-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule], 
   templateUrl: './players.details.html',
   styleUrls: ['./players.details.css']
 })
@@ -23,60 +23,46 @@ export class PlayerDetail implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private playerService: PlayerService,
     private clansService: ClansService,
-    private questsService: QuestsService,
-    private router: Router
+    private questsService: QuestsService
   ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.player = this.playerService.getPlayerById(id);
+
     if (this.player?.clanId) {
       this.clan = this.clansService.getById(this.player.clanId);
     }
-    this.allQuests = this.questsService.quests(); // get all quests
+
+    this.allQuests = this.questsService.quests();
   }
 
-addQuest() {
-  if (!this.player || !this.selectedQuestId) return;
+  addQuest() {
+    if (!this.player || this.selectedQuestId == null) return;
+    if ((this.player.quests ?? []).some(q => q.id === this.selectedQuestId)) return;
 
-  const questId = Number(this.selectedQuestId);
-  const quest = this.questsService.getQuestById(questId);
-  if (!quest) return;
+    const quest = this.questsService.getQuestById(this.selectedQuestId);
+    if (!quest) return;
 
-  // skontroluj, či už hráč tento quest nemá
-  if ((this.player.quests ?? []).some(q => q.id === quest.id)) {
-    alert('Hráč už má tento quest!');
-    return;
+    const questStub: QuestStub = {
+      id: quest.id,
+      title: quest.title,
+      description: quest.description,
+      xp: quest.xp
+    };
+
+    this.playerService.addQuest(this.player.id, questStub);
+    this.player = this.playerService.getPlayerById(this.player.id);
   }
 
-  const questStub: QuestStub = {
-    id: quest.id,
-    title: quest.title,
-    description: quest.description,
-    xp: quest.xp
-  };
-
-  this.playerService.addQuest(this.player.id, questStub);
-
-  // refresh player
-  this.player = this.playerService.getPlayerById(this.player.id);
-
-  // reset select
-  this.selectedQuestId = undefined;
-}
-
-// odstránenie questu
-removeQuest(questId: number) {
-  if (!this.player) return;
-  this.playerService.removeQuest(this.player.id, questId);
-
-  // refresh player
-  this.player = this.playerService.getPlayerById(this.player.id);
-}
-
-
+  removeQuest(questId: number) {
+    if (!this.player) return;
+    this.playerService.removeQuest(this.player.id, questId);
+    this.player = this.playerService.getPlayerById(this.player.id);
+  }
 
   goToClan() {
     if (!this.clan) return;

@@ -1,28 +1,114 @@
+/* players.details.css */
+:host {
+  display: block;
+  max-width: 700px;
+  margin: 2rem auto;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+}
+
 .player-detail {
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  max-width: 500px;
-  margin: 16px auto;
-  background: #fafafa;
+  background-color: #f9fafb;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.player-detail h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.player-detail h3 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.player-detail h4 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .clan-link {
-  color: #1e90ff;
+  color: #3b82f6;
+  font-weight: 600;
   cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.clan-link:hover {
+  color: #2563eb;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  background-color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+ul li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+ul li a {
+  font-weight: 500;
+  color: #111827;
+  text-decoration: none;
+}
+
+ul li a:hover {
   text-decoration: underline;
 }
 
-.add-quest {
-  margin: 8px 0;
-}
-
-.add-quest select {
-  padding: 4px 8px;
-  margin-right: 8px;
-}
-
-.add-quest button {
-  padding: 4px 12px;
+button {
   cursor: pointer;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.3rem 0.6rem;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button {
+  background-color: #10b981; 
+  color: white;
+}
+
+button.remove-btn {
+  background-color: #ef4444; 
+  color: white;
+}
+
+select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  min-width: 200px;
 }

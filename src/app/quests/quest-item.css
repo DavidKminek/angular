@@ -1,0 +1,41 @@
+
+.quest-detail {
+  background-color: #f9fafb; 
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  margin: 2rem auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quest-detail:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.quest-detail h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937; 
+  margin-bottom: 1rem;
+}
+
+
+.quest-detail p {
+  font-size: 1rem;
+  color: #4b5563; 
+  margin-bottom: 0.75rem;
+}
+
+.quest-detail p strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+p {
+  font-size: 1rem;
+  color: #ef4444; 
+  text-align: center;
+  margin-top: 2rem;
+}
