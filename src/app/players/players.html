@@ -1,11 +1,10 @@
-<div class="players-container">
-  <h2>Players</h2>
-  <button (click)="addPlayer()">Add Player</button>
+<h2>Players</h2>
+<button (click)="addPlayer()">Add Player</button>
 
-  <ul>
-    <li *ngFor="let player of players">
-      {{ player.nickname }} (Level: {{ player.level }})
-      <button (click)="removePlayer(player.id)">Remove</button>
-    </li>
-  </ul>
-</div>
+<ul>
+  <li *ngFor="let player of players">
+    {{ player.nickname }} (Level: {{ player.level }}) 
+    - Clan: {{ getClanName(player) }}
+    <button (click)="removePlayer(player.id)">Delete</button>
+  </li>
+</ul>

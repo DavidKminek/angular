@@ -3,8 +3,9 @@ import { Home } from '../home/home';
 import { Quests } from './quests/quests';
 import { QuestDetail } from './quests/quest-detail';
 import { Players } from './players/players';
-import { ClanPage } from './clan/clan';
 import { PlayerDetail } from './players/players.details';
+import { ClanPage } from './clan/clan';
+import { ClanDetailPage } from './clan/clan-detail';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -12,7 +13,6 @@ export const routes: Routes = [
   { path: 'quests/:id', component: QuestDetail },
   { path: 'players', component: Players },
   { path: 'players/:id', component: PlayerDetail },
-  { path: 'clan', component: ClanPage}
-  
-
+  { path: 'clan', component: ClanPage },
+  { path: 'clan/:id', component: ClanDetailPage } 
 ];

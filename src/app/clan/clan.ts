@@ -1,36 +1,57 @@
-// src/app/clan/clan.ts
 import { Component } from '@angular/core';
-import { ClansService } from './clan.service';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ClansService } from './clan.service';
+import { PlayerService } from '../players/players.service';
 import { Clan } from './clan.interface';
 
 @Component({
+  selector: 'app-clans',
   standalone: true,
-  selector: 'app-clan',
+  imports: [CommonModule],
   templateUrl: './clan.html',
   styleUrls: ['./clan.css']
 })
 export class ClanPage {
-  clans = this.clansService.getAll();
+  clans: Clan[] = [];
 
-  constructor(private clansService: ClansService, private router: Router) {}
+  constructor(
+    private clansService: ClansService,
+    private playerService: PlayerService,
+    private router: Router
+  ) {
+    this.refreshClans();
+  }
+
+  refreshClans() {
+    this.clans = this.clansService.getAll();
+  }
 
   addClan() {
-    const defaultClan: Clan = {
+    const newClan: Clan = {
       id: Date.now(),
-      name: 'New Clan',
-      description: 'Default description',
+      name: `New Clan`,
+      description: 'Auto-created clan',
       capacity: 5,
-      members: []
+      memberIds: []
     };
-    this.clansService.addClan(defaultClan);
+    this.clansService.addClan(newClan);
+    this.refreshClans();
   }
 
-  removeClan(id: number) {
-    this.clansService.removeClan(id);
+  deleteClan(clanId: number) {
+    const clan = this.clansService.getById(clanId);
+    if (!clan) return;
+    if (!confirm(`Delete clan "${clan.name}"?`)) return;
+
+    this.clansService.removeClan(clanId);
+    this.playerService.getAll().forEach(p => {
+      if (p.clanId === clanId) this.playerService.setPlayerClan(p.id, undefined);
+    });
+    this.refreshClans();
   }
 
-  goToDetail(id: number) {
-    this.router.navigate(['/clan', id]);
+  openDetail(clanId: number) {
+    this.router.navigate(['/clan', clanId]);
   }
 }
