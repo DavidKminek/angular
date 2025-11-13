@@ -1,56 +1,85 @@
-import { PlayerService } from './players.service';
-import { Quest } from './player.interface';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PlayerService, Player, QuestStub } from './players.service';
+import { ClansService } from '../clan/clan.service';
 import { QuestsService } from '../quests/quest.service';
+import { Clan } from '../clan/clan.interface';
+import { Quest } from './player.interface';
+import { FormsModule } from '@angular/forms';
 
-export class PlayerDetail {
+@Component({
+  selector: 'app-player-detail',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './players.details.html',
+  styleUrls: ['./players.details.css']
+})
+export class PlayerDetail implements OnInit {
+  player?: Player;
+  clan?: Clan;
+  allQuests: Quest[] = [];
+  selectedQuestId?: number;
+
   constructor(
+    private route: ActivatedRoute,
     private playerService: PlayerService,
-    private questsService: QuestsService
+    private clansService: ClansService,
+    private questsService: QuestsService,
+    private router: Router
   ) {}
 
-  showPlayer(playerId: number) {
-    const player = this.playerService.getPlayerById(playerId);
-    if (!player) return;
-
-    (document.getElementById('player-name') as HTMLElement).innerText =
-      `${player.nickname} (Level: ${player.level})`;
-
-    const questList = document.getElementById('quest-list')!;
-    questList.innerHTML = '';
-    if (player.quests) {
-      player.quests.forEach((q: Quest) => {
-        const li = document.createElement('li');
-        li.innerText = q.title;
-
-        const btn = document.createElement('button');
-        btn.innerText = 'Remove';
-        btn.onclick = () => {
-          this.playerService.removeQuest(player.id, q.id);
-          this.showPlayer(player.id);
-        };
-
-        li.appendChild(btn);
-        questList.appendChild(li);
-      });
+  ngOnInit() {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.player = this.playerService.getPlayerById(id);
+    if (this.player?.clanId) {
+      this.clan = this.clansService.getById(this.player.clanId);
     }
+    this.allQuests = this.questsService.quests(); // get all quests
+  }
 
-    const questSelect = document.getElementById('all-quests') as HTMLSelectElement;
-    questSelect.innerHTML = '';
-    this.questsService.quests().forEach((q: Quest) => {
-      const option = document.createElement('option');
-      option.value = q.id.toString();
-      option.innerText = q.title;
-      questSelect.appendChild(option);
-    });
+addQuest() {
+  if (!this.player || !this.selectedQuestId) return;
 
-    const addBtn = document.getElementById('add-quest-btn')!;
-    addBtn.onclick = () => {
-      const selectedId = Number(questSelect.value);
-      const quest = this.questsService.getQuestById(selectedId);
-      if (quest) {
-        this.playerService.addQuest(player.id, quest);
-        this.showPlayer(player.id);
-      }
-    };
+  const questId = Number(this.selectedQuestId);
+  const quest = this.questsService.getQuestById(questId);
+  if (!quest) return;
+
+  // skontroluj, či už hráč tento quest nemá
+  if ((this.player.quests ?? []).some(q => q.id === quest.id)) {
+    alert('Hráč už má tento quest!');
+    return;
+  }
+
+  const questStub: QuestStub = {
+    id: quest.id,
+    title: quest.title,
+    description: quest.description,
+    xp: quest.xp
+  };
+
+  this.playerService.addQuest(this.player.id, questStub);
+
+  // refresh player
+  this.player = this.playerService.getPlayerById(this.player.id);
+
+  // reset select
+  this.selectedQuestId = undefined;
+}
+
+// odstránenie questu
+removeQuest(questId: number) {
+  if (!this.player) return;
+  this.playerService.removeQuest(this.player.id, questId);
+
+  // refresh player
+  this.player = this.playerService.getPlayerById(this.player.id);
+}
+
+
+
+  goToClan() {
+    if (!this.clan) return;
+    this.router.navigate(['/clan', this.clan.id]);
   }
 }

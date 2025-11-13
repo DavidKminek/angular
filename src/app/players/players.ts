@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlayerService, Player } from './players.service';
 import { ClansService } from '../clan/clan.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-players',
@@ -13,10 +14,14 @@ import { ClansService } from '../clan/clan.service';
 export class Players {
   players: Player[] = [];
 
-  constructor(private playerService: PlayerService, private clansService: ClansService) {
+  constructor(
+    private playerService: PlayerService,
+    private clansService: ClansService,
+    private router: Router
+  ) {
     this.refreshPlayers();
 
-    // automatický refresh pri udalostiach
+    // Automatický refresh pri udalostiach
     document.addEventListener('player:changed', () => this.refreshPlayers());
     document.addEventListener('clan:changed', () => this.refreshPlayers());
   }
@@ -47,5 +52,9 @@ export class Players {
     this.playerService.removePlayer(id);
     this.refreshPlayers();
     document.dispatchEvent(new CustomEvent('player:changed'));
+  }
+
+  goToDetails(playerId: number) {
+    this.router.navigate(['/players', playerId]);
   }
 }

@@ -1,0 +1,28 @@
+.player-detail {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 16px auto;
+  background: #fafafa;
+}
+
+.clan-link {
+  color: #1e90ff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.add-quest {
+  margin: 8px 0;
+}
+
+.add-quest select {
+  padding: 4px 8px;
+  margin-right: 8px;
+}
+
+.add-quest button {
+  padding: 4px 12px;
+  cursor: pointer;
+}

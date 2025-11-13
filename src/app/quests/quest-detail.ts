@@ -12,6 +12,6 @@ export class QuestDetail {
   constructor(private questsService: QuestsService) {}
 
   loadQuest(id: number) {
-    this.quest = this.questsService.getQuestById(id)!; 
+    this.quest = this.questsService.getQuestById(id)!; // ✅ RÝCHLY HACK
   }
 }

@@ -2,10 +2,6 @@
   <div class="quest-detail">
     <h2>{{ quest.title }}</h2>
 
-    @if (quest.imageUrl) {
-      <img [src]="quest.imageUrl" alt="{{ quest.title }}" class="quest-image">
-    }
-
     <p>{{ quest.description }}</p>
     <p><strong>XP:</strong> {{ quest.xp }}</p>
 
