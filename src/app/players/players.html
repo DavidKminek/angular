@@ -1,6 +1,5 @@
 <div class="player-form">
   <h3>Create New Player</h3>
-
   <form [formGroup]="playerForm" (ngSubmit)="createPlayer()">
     <input type="text" placeholder="Nickname (min 8 chars)" formControlName="nickname">
     <div class="error" *ngIf="playerForm.controls.nickname.invalid && playerForm.controls.nickname.touched">
@@ -10,15 +9,24 @@
   </form>
 </div>
 
-<h2>Players</h2>
+<div class="filter-form">
+  <h3>Filter by Level</h3>
+  <form [formGroup]="filterForm">
+    <select formControlName="levelTitle">
+      <option [ngValue]="null">All Levels</option>
+      <option *ngFor="let level of playerLevels" [ngValue]="level.title">{{ level.title }}</option>
+    </select>
+  </form>
 
+  <h3>Search by Nickname</h3>
+  <app-search (searchChange)="onSearchChange($event)"></app-search>
+</div>
+
+<h2>Players</h2>
 <ul class="player-list">
-  <li *ngFor="let p of players">
+  <li *ngFor="let p of filteredPlayers">
     <div class="player-card">
-      <span>
-        {{ p.nickname }} 
-        (Level {{ getPlayerLevelForPlayer(p).level.level }} - {{ getPlayerLevelForPlayer(p).level.title }})
-      </span>
+      <span>{{ p.nickname }} - {{ getPlayerLevelForPlayer(p).level.title }} (Level {{ getPlayerLevelForPlayer(p).level.level }})</span>
       <span>- Clan: {{ getClanName(p) }}</span>
 
       <div class="progress-bar">

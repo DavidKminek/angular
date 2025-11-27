@@ -4,24 +4,30 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { PlayerService, Player } from './players.service';
 import { ClansService } from '../clan/clan.service';
 import { Router } from '@angular/router';
-import { getPlayerLevel } from './level';
+import { getPlayerLevel, playerLevels } from './level';
+import { SearchComponent } from '../search/search';
 
 @Component({
   selector: 'app-players',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SearchComponent],
   templateUrl: './players.html',
   styleUrls: ['./players.css']
 })
 export class Players {
   players: Player[] = [];
+  filteredPlayers: Player[] = [];
+  playerLevels = playerLevels;
 
   playerForm = new FormGroup({
-    nickname: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8)
-    ])
+    nickname: new FormControl('', [Validators.required, Validators.minLength(8)])
   });
+
+  filterForm = new FormGroup({
+    levelTitle: new FormControl<string | null>(null)
+  });
+
+  searchTerm: string = '';
 
   constructor(
     private playerService: PlayerService,
@@ -30,17 +36,33 @@ export class Players {
   ) {
     this.refreshPlayers();
 
+    this.filterForm.get('levelTitle')?.valueChanges.subscribe(() => this.applyFilter());
     document.addEventListener('player:changed', () => this.refreshPlayers());
     document.addEventListener('clan:changed', () => this.refreshPlayers());
   }
 
   getPlayerLevelForPlayer(player: Player) {
-    // vždy vracia platný objekt
     return getPlayerLevel(player.xp ?? 0);
   }
 
   refreshPlayers() {
     this.players = this.playerService.getAll();
+    this.applyFilter();
+  }
+
+  // Kombinované filtrovanie podľa levelu a vyhľadávania
+  applyFilter() {
+    const levelTitle = this.filterForm.get('levelTitle')?.value;
+    this.filteredPlayers = this.players.filter(p => {
+      const matchesLevel = !levelTitle || this.getPlayerLevelForPlayer(p).level.title === levelTitle;
+      const matchesSearch = !this.searchTerm || p.nickname.toLowerCase().includes(this.searchTerm.toLowerCase());
+      return matchesLevel && matchesSearch;
+    });
+  }
+
+  onSearchChange(value: string) {
+    this.searchTerm = value;
+    this.applyFilter();
   }
 
   getClanName(player: Player): string {
@@ -51,7 +73,6 @@ export class Players {
 
   createPlayer() {
     if (this.playerForm.invalid) return;
-
     const newPlayer: Player = {
       id: Date.now(),
       nickname: this.playerForm.value.nickname!,
@@ -59,7 +80,6 @@ export class Players {
       activeQuests: [],
       completedQuests: []
     };
-
     this.playerService.addPlayer(newPlayer);
     this.playerForm.reset();
     document.dispatchEvent(new CustomEvent('player:changed'));
