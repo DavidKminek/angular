@@ -55,7 +55,7 @@ export class Players {
     const levelTitle = this.filterForm.get('levelTitle')?.value;
     this.filteredPlayers = this.players.filter(p => {
       const matchesLevel = !levelTitle || this.getPlayerLevelForPlayer(p).level.title === levelTitle;
-      const matchesSearch = !this.searchTerm || p.nickname.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesSearch = !this.searchTerm || p.nickname.toLowerCase().startsWith(this.searchTerm.toLowerCase());
       return matchesLevel && matchesSearch;
     });
   }

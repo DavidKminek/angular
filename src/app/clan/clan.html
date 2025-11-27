@@ -33,7 +33,10 @@
 
   <h2>Clans</h2>
 
-  <div *ngFor="let clan of clans" class="clan-card">
+  <!-- Search políčko -->
+  <app-search (searchChange)="onSearchChange($event)"></app-search>
+
+  <div *ngFor="let clan of filteredClans" class="clan-card">
     <div class="clan-info">
       <div class="title">
         {{ clan.name }} ({{ clan.memberIds?.length }}/{{ clan.capacity }})

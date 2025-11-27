@@ -4,17 +4,19 @@ import { Router } from '@angular/router';
 import { ClansService } from './clan.service';
 import { PlayerService } from '../players/players.service';
 import { Clan } from './clan.interface';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { SearchComponent } from '../search/search';
 
 @Component({
   selector: 'app-clans',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SearchComponent],
   templateUrl: './clan.html',
   styleUrls: ['./clan.css']
 })
 export class ClanPage {
   clans: Clan[] = [];
+  filteredClans: Clan[] = [];
   clanForm: FormGroup;
 
   constructor(
@@ -34,6 +36,7 @@ export class ClanPage {
 
   refreshClans() {
     this.clans = this.clansService.getAll();
+    this.filteredClans = [...this.clans];
   }
 
   createClan() {
@@ -70,5 +73,13 @@ export class ClanPage {
 
   openDetail(clanId: number) {
     this.router.navigate(['/clan', clanId]);
+  }
+
+  // ------------------ NOVÉ: vyhľadávanie ------------------
+  onSearchChange(value: string) {
+    const search = value.toLowerCase();
+    this.filteredClans = this.clans.filter(c =>
+      c.name.toLowerCase().startsWith(search)
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 
@@ -7,13 +7,12 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <input type="text" [formControl]="searchControl" placeholder="Search..." />
+    <input [formControl]="searchControl" placeholder="Search..." class="search-input"/>
   `
 })
 export class SearchComponent {
-  searchControl = new FormControl('');
-
   @Output() searchChange = new EventEmitter<string>();
+  searchControl = new FormControl('');
 
   constructor() {
     this.searchControl.valueChanges.subscribe(value => {
