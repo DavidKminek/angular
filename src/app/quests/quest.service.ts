@@ -28,4 +28,20 @@ export class QuestsService {
   deleteQuest(id: number) {
     this._quests.update(qs => qs.filter(q => q.id !== id));
   }
+  addCustomQuest(data: { title: string; description: string; xp: number }) {
+  const nextId = this._quests().length > 0
+    ? Math.max(...this._quests().map(q => q.id)) + 1
+    : 1;
+
+  const newQuest: Quest = {
+    id: nextId,
+    title: data.title,
+    description: data.description,
+    xp: data.xp
+  };
+
+  this._quests.update(qs => [...qs, newQuest]);
+}
+
+
 }

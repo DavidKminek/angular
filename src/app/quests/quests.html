@@ -1,9 +1,26 @@
+
 <h2>Available Quests</h2>
 <p>Total quests: {{ questsService.quests().length }}</p>
+<div class="create-form" [formGroup]="questForm">
+  <h3>Create New Quest</h3>
 
-<button (click)="addQuest()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded mb-4">
-  + Add Quest
-</button>
+  <input type="text" formControlName="title" placeholder="Title">
+  <p class="error" *ngIf="questForm.controls.title.invalid && questForm.controls.title.touched">
+    Title must be at least 8 characters.
+  </p>
+
+  <textarea formControlName="description" placeholder="Description"></textarea>
+
+  <input type="number" formControlName="xp" placeholder="XP">
+
+  <button 
+    (click)="createQuest()" 
+    [disabled]="questForm.invalid"
+    class="create-btn"
+  >
+    Create Quest
+  </button>
+</div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
   @for (quest of questsService.quests(); track quest.id) {

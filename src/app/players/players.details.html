@@ -1,20 +1,38 @@
-<div class="player-detail" *ngIf="player">
-  <h2>{{ player.nickname }} (Level {{ player.level }})</h2>
+<div *ngIf="player" class="player-detail">
+  <h2>{{ player.nickname }}</h2>
 
-  <div *ngIf="clan">
-    Clan: <span class="clan-link" (click)="goToClan()">{{ clan.name }}</span>
-  </div>
-  <div *ngIf="!clan">
-    Clan: -
+  <div>
+    Clan: 
+    <span *ngIf="clan" class="clan-link" (click)="goToClan()">{{ clan.name }}</span>
+    <span *ngIf="!clan">-</span>
   </div>
 
-  <h3>Questy hráča</h3>
+  <h3>Level: {{ levelInfo?.level.title }} ({{ levelInfo?.level.level }})</h3>
+  <div class="progress-bar">
+    <div class="progress" [style.width.%]="levelInfo?.progress"></div>
+  </div>
+  <p *ngIf="levelInfo?.nextLevel">
+    XP do ďalšieho levelu: {{ (levelInfo?.nextLevel.xpRequired ?? 0) - player.xp }}
+  </p>
+
+  <h3>Aktívne questy</h3>
   <ul>
-    <li *ngFor="let q of player.quests">
+    <li *ngFor="let q of player.activeQuests">
       <a [routerLink]="['/quests', q.id]">{{ q.title }}</a> (XP: {{ q.xp }})
+      <button (click)="completeQuest(q.id)">Označiť dokončený</button>
       <button (click)="removeQuest(q.id)">Odstrániť</button>
     </li>
-    <li *ngIf="!player.quests || player.quests.length === 0">Žiadne questy</li>
+    <li *ngIf="!player.activeQuests?.length">Žiadne aktívne questy</li>
+  </ul>
+
+  <h3>Dokončené questy</h3>
+  <ul>
+    <li *ngFor="let q of player.completedQuests">
+      <a [routerLink]="['/quests', q.id]">{{ q.title }}</a> (XP: {{ q.xp }})
+      <button (click)="reopenQuest(q.id)">Označiť aktívny</button>
+      <button (click)="removeQuest(q.id)">Odstrániť</button>
+    </li>
+    <li *ngIf="!player.completedQuests?.length">Žiadne dokončené questy</li>
   </ul>
 
   <h4>Pridať nový quest</h4>

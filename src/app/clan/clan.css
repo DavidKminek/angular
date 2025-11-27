@@ -1,77 +1,58 @@
-/* clan.css */
-:host {
-  display: block;
-  max-width: 800px;
-  margin: 2rem auto;
-  font-family: 'Inter', sans-serif;
-  color: #1f2937;
+.clan-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fafafa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 0.375rem;
-  padding: 0.4rem 0.8rem;
-  font-weight: 500;
-  transition: background-color 0.2s, transform 0.1s;
+.form-card input, .form-card textarea {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
-button:hover {
-  transform: translateY(-1px);
+.form-card button {
+  align-self: flex-start;
+  padding: 6px 14px;
 }
 
-button:active {
-  transform: translateY(0);
-}
-
-button.add-btn {
-  background-color: #10b981; 
-  color: white;
-  margin-bottom: 1rem;
-}
-
-button.delete-btn {
-  background-color: #ef4444;
-  color: white;
-  margin-left: 0.5rem;
-}
-
-button.detail-btn {
-  background-color: #3b82f6; 
-  color: white;
-  margin-left: 0.5rem;
+.error {
+  color: #c70000;
+  font-size: 13px;
 }
 
 .clan-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f9fafb;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
-.clan-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.clan-card .title {
+  font-weight: bold;
+  font-size: 16px;
 }
 
-.clan-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.clan-info .small {
-  font-size: 0.875rem;
-  color: #6b7280; 
-  margin-top: 0.25rem;
+button.danger {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
 }

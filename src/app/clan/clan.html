@@ -1,21 +1,50 @@
-<div>
-  <h2>Clans</h2>
-  <button (click)="addClan()">Add Clan</button>
+<div class="clan-page">
 
-  <div *ngIf="clans.length === 0">
-    <p>No clans yet.</p>
-  </div>
+  <h2>Create New Clan</h2>
+
+  <form [formGroup]="clanForm" (ngSubmit)="createClan()" class="form-card">
+
+    <label>
+      Name:
+      <input formControlName="name" />
+    </label>
+    <div class="error" *ngIf="clanForm.controls['name'].touched && clanForm.controls['name'].invalid">
+      Name must have at least 8 characters.
+    </div>
+
+    <label>
+      Description:
+      <textarea formControlName="description"></textarea>
+    </label>
+
+    <label>
+      Capacity:
+      <input type="number" formControlName="capacity" />
+    </label>
+
+    <div class="error" *ngIf="clanForm.controls['capacity'].touched && clanForm.controls['capacity'].invalid">
+      Capacity must be at least 1.
+    </div>
+
+    <button type="submit" [disabled]="clanForm.invalid">Create Clan</button>
+  </form>
+
+  <hr />
+
+  <h2>Clans</h2>
 
   <div *ngFor="let clan of clans" class="clan-card">
     <div class="clan-info">
-      <div style="font-weight:600;">
+      <div class="title">
         {{ clan.name }} ({{ clan.memberIds?.length }}/{{ clan.capacity }})
       </div>
       <div class="small">{{ clan.description }}</div>
     </div>
+
     <div>
       <button (click)="openDetail(clan.id)">Detail</button>
-      <button (click)="deleteClan(clan.id)">Delete</button>
+      <button class="danger" (click)="deleteClan(clan.id)">Delete</button>
     </div>
   </div>
+
 </div>

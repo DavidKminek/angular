@@ -4,22 +4,31 @@ import { Router } from '@angular/router';
 import { ClansService } from './clan.service';
 import { PlayerService } from '../players/players.service';
 import { Clan } from './clan.interface';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-clans',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './clan.html',
   styleUrls: ['./clan.css']
 })
 export class ClanPage {
   clans: Clan[] = [];
+  clanForm: FormGroup;
 
   constructor(
     private clansService: ClansService,
     private playerService: PlayerService,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder
   ) {
+    this.clanForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(8)]],
+      description: [''],
+      capacity: [5, [Validators.required, Validators.min(1)]]
+    });
+
     this.refreshClans();
   }
 
@@ -27,15 +36,23 @@ export class ClanPage {
     this.clans = this.clansService.getAll();
   }
 
-  addClan() {
+  createClan() {
+    if (this.clanForm.invalid) {
+      this.clanForm.markAllAsTouched();
+      return;
+    }
+
     const newClan: Clan = {
       id: Date.now(),
-      name: `New Clan`,
-      description: 'Auto-created clan',
-      capacity: 5,
+      name: this.clanForm.value.name,
+      description: this.clanForm.value.description,
+      capacity: this.clanForm.value.capacity,
       memberIds: []
     };
+
     this.clansService.addClan(newClan);
+    this.clanForm.reset();
+    this.clanForm.patchValue({ capacity: 5 });
     this.refreshClans();
   }
 

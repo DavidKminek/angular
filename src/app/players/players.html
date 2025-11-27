@@ -1,11 +1,34 @@
-<h2>Players</h2>
-<button (click)="addPlayer()">Add Player</button>
+<div class="player-form">
+  <h3>Create New Player</h3>
 
-<ul>
+  <form [formGroup]="playerForm" (ngSubmit)="createPlayer()">
+    <input type="text" placeholder="Nickname (min 8 chars)" formControlName="nickname">
+    <div class="error" *ngIf="playerForm.controls.nickname.invalid && playerForm.controls.nickname.touched">
+      Nickname must have at least 8 characters.
+    </div>
+    <button class="create-btn" type="submit" [disabled]="playerForm.invalid">Create Player</button>
+  </form>
+</div>
+
+<h2>Players</h2>
+
+<ul class="player-list">
   <li *ngFor="let p of players">
-    {{ p.nickname }} (Level {{ p.level }})
-    <span> - Clan: {{ getClanName(p) }}</span>
-    <button (click)="goToDetails(p.id)">Details</button>
-    <button (click)="removePlayer(p.id)">Remove</button>
+    <div class="player-card">
+      <span>
+        {{ p.nickname }} 
+        (Level {{ getPlayerLevelForPlayer(p).level.level }} - {{ getPlayerLevelForPlayer(p).level.title }})
+      </span>
+      <span>- Clan: {{ getClanName(p) }}</span>
+
+      <div class="progress-bar">
+        <div class="progress" [style.width.%]="getPlayerLevelForPlayer(p).progress"></div>
+      </div>
+
+      <div class="actions">
+        <button (click)="goToDetails(p.id)">Details</button>
+        <button class="danger" (click)="removePlayer(p.id)">Remove</button>
+      </div>
+    </div>
   </li>
 </ul>

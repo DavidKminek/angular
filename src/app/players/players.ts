@@ -1,18 +1,27 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PlayerService, Player } from './players.service';
 import { ClansService } from '../clan/clan.service';
 import { Router } from '@angular/router';
+import { getPlayerLevel } from './level';
 
 @Component({
   selector: 'app-players',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './players.html',
   styleUrls: ['./players.css']
 })
 export class Players {
   players: Player[] = [];
+
+  playerForm = new FormGroup({
+    nickname: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8)
+    ])
+  });
 
   constructor(
     private playerService: PlayerService,
@@ -21,9 +30,13 @@ export class Players {
   ) {
     this.refreshPlayers();
 
-    // Automatický refresh pri udalostiach
     document.addEventListener('player:changed', () => this.refreshPlayers());
     document.addEventListener('clan:changed', () => this.refreshPlayers());
+  }
+
+  getPlayerLevelForPlayer(player: Player) {
+    // vždy vracia platný objekt
+    return getPlayerLevel(player.xp ?? 0);
   }
 
   refreshPlayers() {
@@ -36,21 +49,24 @@ export class Players {
     return clan ? clan.name : '-';
   }
 
-  addPlayer() {
+  createPlayer() {
+    if (this.playerForm.invalid) return;
+
     const newPlayer: Player = {
       id: Date.now(),
-      nickname: 'New Player',
-      level: 1,
-      quests: []
+      nickname: this.playerForm.value.nickname!,
+      xp: 0,
+      activeQuests: [],
+      completedQuests: []
     };
+
     this.playerService.addPlayer(newPlayer);
-    this.refreshPlayers();
+    this.playerForm.reset();
     document.dispatchEvent(new CustomEvent('player:changed'));
   }
 
   removePlayer(id: number) {
     this.playerService.removePlayer(id);
-    this.refreshPlayers();
     document.dispatchEvent(new CustomEvent('player:changed'));
   }
 

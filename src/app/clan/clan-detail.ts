@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClansService } from './clan.service';
 import { PlayerService, Player } from '../players/players.service';
 import { Clan } from './clan.interface';
+import { getPlayerLevel } from '../players/level';
 
 @Component({
   selector: 'app-clan-detail',
@@ -36,7 +37,6 @@ export class ClanDetailPage implements OnInit {
   refreshAvailablePlayers() {
     if (!this.clan) return;
     const allPlayers = this.playerService.getAll();
-    // Hráči, ktorí ešte nie sú v žiadnom clane
     this.availablePlayers = allPlayers.filter(p => !this.clansService.getAll().some(c => c.memberIds?.includes(p.id)));
   }
 
@@ -66,4 +66,11 @@ export class ClanDetailPage implements OnInit {
   goToPlayerDetail(playerId: number) {
     this.router.navigate(['/players', playerId]);
   }
+
+  
+  getPlayerLevelForPlayer(player: Player) {
+    return getPlayerLevel(player.xp ?? 0);
+  }
 }
+
+
