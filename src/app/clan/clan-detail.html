@@ -1,35 +1,56 @@
-<div *ngIf="clan">
+@if (clan) {
+
   <h2>{{ clan.name }} ({{ clan.memberIds?.length }}/{{ clan.capacity }})</h2>
   <p>{{ clan.description }}</p>
 
   <h3>Add Player</h3>
-  <select [(ngModel)]="selectedPlayerId">
-    <option [ngValue]="undefined" disabled selected>Select a player</option>
-    <option *ngFor="let player of availablePlayers" [ngValue]="player.id">
-      {{ player.nickname }} 
-      (Level {{ getPlayerLevelForPlayer(player).level.level }} 
-       - {{ getPlayerLevelForPlayer(player).level.title }})
-    </option>
-  </select>
-  <button (click)="addPlayer()">Add</button>
+
+  <form [formGroup]="addPlayerForm">
+    <select formControlName="playerId">
+      <option [ngValue]="null" disabled selected>Select a player</option>
+
+      @for (player of availablePlayers; track player.id) {
+        <option [ngValue]="player.id">
+          {{ player.nickname }}
+          (Level {{ getPlayerLevelForPlayer(player).level.level }}
+           - {{ getPlayerLevelForPlayer(player).level.title }})
+        </option>
+      }
+    </select>
+
+    <button type="button" (click)="addPlayer()">Add</button>
+  </form>
 
   <h3>Members</h3>
-  <ul>
-    <li *ngFor="let memberId of clan.memberIds">
-      <span
-        style="cursor:pointer; text-decoration:underline; color:blue;"
-        (click)="goToPlayerDetail(memberId)">
-        {{ playerService.getPlayerById(memberId)?.nickname || 'Unknown Player' }}
-        (Level {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).level.level }}
-         - {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).level.title }})
-      </span>
-      <progress 
-        [value]="getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).progress"
-        max="100">
-      </progress>
-      <button (click)="removePlayer(memberId)" style="margin-left:8px;">Remove</button>
-    </li>
-  </ul>
-</div>
 
-<p *ngIf="!clan">Clan not found.</p>
+  <ul>
+    @for (memberId of clan.memberIds; track memberId) {
+      <li>
+        <span
+          style="cursor:pointer; text-decoration:underline; color:blue;"
+          (click)="goToPlayerDetail(memberId)"
+        >
+          {{
+            playerService.getPlayerById(memberId)?.nickname
+            || 'Unknown Player'
+          }}
+
+          (Level {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).level.level }}
+           - {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).level.title }})
+        </span>
+
+        <progress
+          [value]="getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).progress"
+          max="100"
+        ></progress>
+
+        <button (click)="removePlayer(memberId)" style="margin-left:8px;">
+          Remove
+        </button>
+      </li>
+    }
+  </ul>
+
+} @else {
+  <p>Clan not found.</p>
+}

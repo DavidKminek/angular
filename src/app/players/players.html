@@ -1,20 +1,41 @@
 <div class="player-form">
   <h3>Create New Player</h3>
+
   <form [formGroup]="playerForm" (ngSubmit)="createPlayer()">
-    <input type="text" placeholder="Nickname (min 8 chars)" formControlName="nickname">
-    <div class="error" *ngIf="playerForm.controls.nickname.invalid && playerForm.controls.nickname.touched">
-      Nickname must have at least 8 characters.
-    </div>
-    <button class="create-btn" type="submit" [disabled]="playerForm.invalid">Create Player</button>
+    <input 
+      type="text" 
+      placeholder="Nickname (min 8 chars)"
+      formControlName="nickname"
+    >
+
+    @if (playerForm.controls['nickname'].invalid && playerForm.controls['nickname'].touched) {
+      <div class="error">
+        Nickname must have at least 8 characters.
+      </div>
+    }
+
+    <button 
+      class="create-btn" 
+      type="submit" 
+      [disabled]="playerForm.invalid"
+    >
+      Create Player
+    </button>
   </form>
 </div>
 
 <div class="filter-form">
   <h3>Filter by Level</h3>
+
   <form [formGroup]="filterForm">
     <select formControlName="levelTitle">
       <option [ngValue]="null">All Levels</option>
-      <option *ngFor="let level of playerLevels" [ngValue]="level.title">{{ level.title }}</option>
+
+      @for (level of playerLevels; track level.title) {
+        <option [ngValue]="level.title">
+          {{ level.title }}
+        </option>
+      }
     </select>
   </form>
 
@@ -23,20 +44,37 @@
 </div>
 
 <h2>Players</h2>
+
 <ul class="player-list">
-  <li *ngFor="let p of filteredPlayers">
-    <div class="player-card">
-      <span>{{ p.nickname }} - {{ getPlayerLevelForPlayer(p).level.title }} (Level {{ getPlayerLevelForPlayer(p).level.level }})</span>
-      <span>- Clan: {{ getClanName(p) }}</span>
+  @for (p of filteredPlayers; track p.id) {
+    <li>
+      <div class="player-card">
 
-      <div class="progress-bar">
-        <div class="progress" [style.width.%]="getPlayerLevelForPlayer(p).progress"></div>
-      </div>
+        <span>
+          {{ p.nickname }} -
+          {{ getPlayerLevelForPlayer(p).level.title }}
+          (Level {{ getPlayerLevelForPlayer(p).level.level }})
+        </span>
 
-      <div class="actions">
-        <button (click)="goToDetails(p.id)">Details</button>
-        <button class="danger" (click)="removePlayer(p.id)">Remove</button>
+        <span>- Clan: {{ getClanName(p) }}</span>
+
+        <div class="progress-bar">
+          <div
+            class="progress"
+            [style.width.%]="getPlayerLevelForPlayer(p).progress"
+          ></div>
+        </div>
+
+        <div class="actions">
+          <button (click)="goToDetails(p.id)">Details</button>
+          <button class="danger" (click)="removePlayer(p.id)">Remove</button>
+        </div>
+
       </div>
-    </div>
-  </li>
+    </li>
+  }
+
+  @if (!filteredPlayers.length) {
+    <li>No players found.</li>
+  }
 </ul>

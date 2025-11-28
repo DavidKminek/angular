@@ -1,11 +1,11 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, NonNullableFormBuilder } from '@angular/forms';
 import { QuestsService } from './quest.service';
 import { Quest } from './quest-interface';
 import { SearchComponent } from '../search/search'; 
+
 @Component({
   selector: 'app-quests',
   standalone: true,
@@ -15,15 +15,18 @@ import { SearchComponent } from '../search/search';
 })
 export class Quests implements OnInit {
 
-  questForm = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.minLength(8)]),
-    description: new FormControl('', Validators.required),
-    xp: new FormControl(0, Validators.required)
+  questForm = this.fb.group({
+    title: this.fb.control('', { validators: [Validators.required, Validators.minLength(8)] }),
+    description: this.fb.control('', { validators: [Validators.required] }),
+    xp: this.fb.control(0, { validators: [Validators.required] })
   });
 
   filteredQuests: Quest[] = [];
 
-  constructor(public questsService: QuestsService) {}
+  constructor(
+    public questsService: QuestsService,
+    private fb: NonNullableFormBuilder
+  ) {}
 
   ngOnInit() {
     this.filteredQuests = this.questsService.quests();
@@ -31,29 +34,34 @@ export class Quests implements OnInit {
 
   onSearchChange(value: string | null) {
     const search = (value ?? '').toLowerCase();
-    this.filteredQuests = this.questsService.quests().filter(q =>
-      q.title.toLowerCase().startsWith(search)
-    );
+    
+    this.filteredQuests = this.questsService
+      .quests()
+      .filter(q => q.title.toLowerCase().startsWith(search));
   }
 
   createQuest() {
     if (this.questForm.invalid) return;
 
-    const { title, description, xp } = this.questForm.value;
+    const { title, description, xp } = this.questForm.getRawValue();
 
     this.questsService.addCustomQuest({
-      title: title!,
-      description: description!,
-      xp: xp!
+      title,
+      description,
+      xp
     });
 
-    this.questForm.reset();
-    this.filteredQuests = this.questsService.quests(); 
+    this.questForm.reset({
+      title: '',
+      description: '',
+      xp: 0
+    });
+
+    this.filteredQuests = this.questsService.quests();
   }
 
   deleteQuest(id: number) {
     this.questsService.deleteQuest(id);
-    this.filteredQuests = this.questsService.quests(); 
+    this.filteredQuests = this.questsService.quests();
   }
 }
-

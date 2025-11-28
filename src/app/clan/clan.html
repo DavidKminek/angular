@@ -2,52 +2,59 @@
 
   <h2>Create New Clan</h2>
 
-  <form [formGroup]="clanForm" (ngSubmit)="createClan()" class="form-card">
+  <form class="form-card">
 
     <label>
       Name:
-      <input formControlName="name" />
+      <input />
     </label>
-    <div class="error" *ngIf="clanForm.controls['name'].touched && clanForm.controls['name'].invalid">
+
+    <div class="error">
       Name must have at least 8 characters.
     </div>
 
     <label>
       Description:
-      <textarea formControlName="description"></textarea>
+      <textarea></textarea>
     </label>
 
     <label>
       Capacity:
-      <input type="number" formControlName="capacity" />
+      <input type="number" />
     </label>
 
-    <div class="error" *ngIf="clanForm.controls['capacity'].touched && clanForm.controls['capacity'].invalid">
+    <div class="error">
       Capacity must be at least 1.
     </div>
 
-    <button type="submit" [disabled]="clanForm.invalid">Create Clan</button>
+    <button type="submit">Create Clan</button>
   </form>
 
   <hr />
 
   <h2>Clans</h2>
 
-  <!-- Search políčko -->
-  <app-search (searchChange)="onSearchChange($event)"></app-search>
+  <app-search></app-search>
 
-  <div *ngFor="let clan of filteredClans" class="clan-card">
-    <div class="clan-info">
-      <div class="title">
-        {{ clan.name }} ({{ clan.memberIds?.length }}/{{ clan.capacity }})
+  @for (clan of filteredClans; track clan.id) {
+    <div class="clan-card">
+
+      <div class="clan-info">
+        <div class="title">
+          {{ clan.name }} ({{ clan.memberIds?.length }}/{{ clan.capacity }})
+        </div>
+
+        <div class="small">
+          {{ clan.description }}
+        </div>
       </div>
-      <div class="small">{{ clan.description }}</div>
-    </div>
 
-    <div>
-      <button (click)="openDetail(clan.id)">Detail</button>
-      <button class="danger" (click)="deleteClan(clan.id)">Delete</button>
+      <div>
+        <button (click)="openDetail(clan.id)">Detail</button>
+        <button class="danger" (click)="deleteClan(clan.id)">Delete</button>
+      </div>
+
     </div>
-  </div>
+  }
 
 </div>

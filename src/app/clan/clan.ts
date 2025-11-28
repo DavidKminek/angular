@@ -75,7 +75,7 @@ export class ClanPage {
     this.router.navigate(['/clan', clanId]);
   }
 
-  // ------------------ NOVÉ: vyhľadávanie ------------------
+
   onSearchChange(value: string) {
     const search = value.toLowerCase();
     this.filteredClans = this.clans.filter(c =>

@@ -1,22 +1,36 @@
 <h2>Available Quests</h2>
 <p>Total quests: {{ questsService.quests().length }}</p>
 
-<!-- Search políčko -->
 <app-search (searchChange)="onSearchChange($event)"></app-search>
 
 <div class="create-form" [formGroup]="questForm">
   <h3>Create New Quest</h3>
 
-  <input type="text" formControlName="title" placeholder="Title">
-  <p class="error" *ngIf="questForm.controls.title.invalid && questForm.controls.title.touched">
-    Title must be at least 8 characters.
-  </p>
+  <input 
+    type="text" 
+    formControlName="title" 
+    placeholder="Title"
+  >
 
-  <textarea formControlName="description" placeholder="Description"></textarea>
+  @if (questForm.controls['title'].invalid && questForm.controls['title'].touched) {
+    <p class="error">
+      Title must be at least 8 characters.
+    </p>
+  }
 
-  <input type="number" formControlName="xp" placeholder="XP">
+  <textarea 
+    formControlName="description" 
+    placeholder="Description"
+  ></textarea>
+
+  <input 
+    type="number" 
+    formControlName="xp" 
+    placeholder="XP"
+  >
 
   <button 
+    type="button"
     (click)="createQuest()" 
     [disabled]="questForm.invalid"
     class="create-btn"
@@ -26,19 +40,26 @@
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-  <div *ngFor="let quest of filteredQuests" 
-       class="p-4 bg-gray-800 text-white rounded-xl shadow hover:bg-gray-700 transition cursor-pointer"
-       [routerLink]="['/quests', quest.id]">
-    <h3 class="text-xl font-bold">{{ quest.title }}</h3>
-    <p>{{ quest.description }}</p>
-    <p><strong>XP:</strong> {{ quest.xp }}</p>
 
-    <button
-      (click)="deleteQuest(quest.id); $event.stopPropagation()"
-      class="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+  @for (quest of filteredQuests; track quest.id) {
+    <div 
+      class="p-4 bg-gray-800 text-white rounded-xl shadow hover:bg-gray-700 transition cursor-pointer"
+      [routerLink]="['/quests', quest.id]"
     >
-      Delete
-    </button>
-  </div>
-  <p *ngIf="!filteredQuests.length">No quests match your search.</p>
+      <h3 class="text-xl font-bold">{{ quest.title }}</h3>
+      <p>{{ quest.description }}</p>
+      <p><strong>XP:</strong> {{ quest.xp }}</p>
+
+      <button
+        (click)="deleteQuest(quest.id); $event.stopPropagation()"
+        class="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+      >
+        Delete
+      </button>
+    </div>
+  }
+
+  @if (!filteredQuests.length) {
+    <p>No quests match your search.</p>
+  }
 </div>

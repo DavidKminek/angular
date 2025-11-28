@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClansService } from './clan.service';
 import { PlayerService, Player } from '../players/players.service';
@@ -10,14 +10,18 @@ import { getPlayerLevel } from '../players/level';
 @Component({
   selector: 'app-clan-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './clan-detail.html',
   styleUrls: ['./clan-detail.css']
 })
 export class ClanDetailPage implements OnInit {
+
   clan?: Clan;
   availablePlayers: Player[] = [];
-  selectedPlayerId?: number;
+
+  addPlayerForm = new FormGroup({
+    playerId: new FormControl<number | null>(null, Validators.required)
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -36,17 +40,25 @@ export class ClanDetailPage implements OnInit {
 
   refreshAvailablePlayers() {
     if (!this.clan) return;
+
     const allPlayers = this.playerService.getAll();
-    this.availablePlayers = allPlayers.filter(p => !this.clansService.getAll().some(c => c.memberIds?.includes(p.id)));
+    this.availablePlayers = allPlayers.filter(
+      p => !this.clansService.getAll().some(c => c.memberIds?.includes(p.id))
+    );
   }
 
   addPlayer() {
-    if (!this.clan || this.selectedPlayerId == null) return;
+    if (!this.clan) return;
 
-    const success = this.clansService.addPlayerToClan(this.clan.id, this.selectedPlayerId);
+    const playerId = this.addPlayerForm.value.playerId!;
+    if (playerId == null) return;
+
+    const success = this.clansService.addPlayerToClan(this.clan.id, playerId);
     if (success) {
-      this.playerService.setPlayerClan(this.selectedPlayerId, this.clan.id);
-      this.selectedPlayerId = undefined;
+      this.playerService.setPlayerClan(playerId, this.clan.id);
+
+      this.addPlayerForm.reset();
+
       this.refreshAvailablePlayers();
     } else {
       alert('Cannot add player: either clan is full or player already in another clan.');
@@ -67,10 +79,7 @@ export class ClanDetailPage implements OnInit {
     this.router.navigate(['/players', playerId]);
   }
 
-  
   getPlayerLevelForPlayer(player: Player) {
     return getPlayerLevel(player.xp ?? 0);
   }
 }
-
-

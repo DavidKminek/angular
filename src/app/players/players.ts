@@ -50,7 +50,7 @@ export class Players {
     this.applyFilter();
   }
 
-  // Kombinované filtrovanie podľa levelu a vyhľadávania
+
   applyFilter() {
     const levelTitle = this.filterForm.get('levelTitle')?.value;
     this.filteredPlayers = this.players.filter(p => {
