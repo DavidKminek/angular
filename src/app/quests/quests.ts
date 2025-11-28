@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, NonNullableFormBuilder } from '@angular/forms';
 import { QuestsService } from './quest.service';
@@ -9,7 +9,7 @@ import { SearchComponent } from '../search/search';
 @Component({
   selector: 'app-quests',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, SearchComponent],
+  imports: [RouterLink, ReactiveFormsModule, SearchComponent],
   templateUrl: './quests.html',
   styleUrls: ['./quests.css']
 })

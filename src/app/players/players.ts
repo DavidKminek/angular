@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PlayerService, Player } from './players.service';
 import { ClansService } from '../clan/clan.service';
@@ -10,7 +10,7 @@ import { SearchComponent } from '../search/search';
 @Component({
   selector: 'app-players',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SearchComponent],
+  imports: [ReactiveFormsModule, SearchComponent],
   templateUrl: './players.html',
   styleUrls: ['./players.css']
 })

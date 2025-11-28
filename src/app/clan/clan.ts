@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { ClansService } from './clan.service';
 import { PlayerService } from '../players/players.service';
@@ -10,7 +10,7 @@ import { SearchComponent } from '../search/search';
 @Component({
   selector: 'app-clans',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SearchComponent],
+  imports: [ReactiveFormsModule, SearchComponent],
   templateUrl: './clan.html',
   styleUrls: ['./clan.css']
 })

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClansService } from './clan.service';
@@ -10,7 +10,7 @@ import { getPlayerLevel } from '../players/level';
 @Component({
   selector: 'app-clan-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './clan-detail.html',
   styleUrls: ['./clan-detail.css']
 })

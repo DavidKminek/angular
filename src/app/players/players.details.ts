@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule, NgModel } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PlayerService, Player, QuestStub } from './players.service';
@@ -12,7 +12,7 @@ import { getPlayerLevel } from './level';
 @Component({
   selector: 'app-player-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './players.details.html',
   styleUrls: ['./players.details.css']
 })
