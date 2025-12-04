@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
-
 import { Router } from '@angular/router';
+
+import { signal, computed } from '@angular/core';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
 import { ClansService } from './clan.service';
 import { PlayerService } from '../players/players.service';
 import { Clan } from './clan.interface';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
+
 import { SearchComponent } from '../search/search';
 
 @Component({
@@ -15,28 +18,39 @@ import { SearchComponent } from '../search/search';
   styleUrls: ['./clan.css']
 })
 export class ClanPage {
-  clans: Clan[] = [];
-  filteredClans: Clan[] = [];
-  clanForm: FormGroup;
+
+  // --- SIGNALS ---
+  clans = signal<Clan[]>([]);
+  search = signal('');
+
+  filteredClans = computed(() => {
+    const s = this.search().toLowerCase();
+    return this.clans().filter(c =>
+      c.name.toLowerCase().startsWith(s)
+    );
+  });
+
+  // --- SIGNAL FORM ---
+  clanForm = new FormGroup({
+    name: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(8)]
+    }),
+    description: new FormControl(''),
+    capacity: new FormControl(5, {
+      validators: [Validators.required, Validators.min(1)]
+    })
+  });
 
   constructor(
     private clansService: ClansService,
     private playerService: PlayerService,
-    private router: Router,
-    private fb: FormBuilder
+    private router: Router
   ) {
-    this.clanForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(8)]],
-      description: [''],
-      capacity: [5, [Validators.required, Validators.min(1)]]
-    });
-
-    this.refreshClans();
+    this.refresh();
   }
 
-  refreshClans() {
-    this.clans = this.clansService.getAll();
-    this.filteredClans = [...this.clans];
+  refresh() {
+    this.clans.set(this.clansService.getAll());
   }
 
   createClan() {
@@ -45,18 +59,20 @@ export class ClanPage {
       return;
     }
 
+    const value = this.clanForm.getRawValue();
+
     const newClan: Clan = {
       id: Date.now(),
-      name: this.clanForm.value.name,
-      description: this.clanForm.value.description,
-      capacity: this.clanForm.value.capacity,
+      name: value.name!,
+      description: value.description!,
+      capacity: value.capacity!,
       memberIds: []
     };
 
     this.clansService.addClan(newClan);
-    this.clanForm.reset();
-    this.clanForm.patchValue({ capacity: 5 });
-    this.refreshClans();
+    this.clanForm.reset({ capacity: 5 });
+
+    this.refresh();
   }
 
   deleteClan(clanId: number) {
@@ -68,18 +84,15 @@ export class ClanPage {
     this.playerService.getAll().forEach(p => {
       if (p.clanId === clanId) this.playerService.setPlayerClan(p.id, undefined);
     });
-    this.refreshClans();
+
+    this.refresh();
   }
 
   openDetail(clanId: number) {
     this.router.navigate(['/clan', clanId]);
   }
 
-
   onSearchChange(value: string) {
-    const search = value.toLowerCase();
-    this.filteredClans = this.clans.filter(c =>
-      c.name.toLowerCase().startsWith(search)
-    );
+    this.search.set(value);
   }
 }

@@ -2,30 +2,34 @@
 
   <h2>Create New Clan</h2>
 
-  <form class="form-card">
+  <form class="form-card" [formGroup]="clanForm" (ngSubmit)="createClan()">
 
     <label>
       Name:
-      <input />
+      <input formControlName="name" />
     </label>
 
-    <div class="error">
-      Name must have at least 8 characters.
-    </div>
+    @if (clanForm.controls['name'].invalid && clanForm.controls['name'].touched) {
+      <div class="error">
+        Name must have at least 8 characters.
+      </div>
+    }
 
     <label>
       Description:
-      <textarea></textarea>
+      <textarea formControlName="description"></textarea>
     </label>
 
     <label>
       Capacity:
-      <input type="number" />
+      <input type="number" formControlName="capacity" />
     </label>
 
-    <div class="error">
-      Capacity must be at least 1.
-    </div>
+    @if (clanForm.controls['capacity'].invalid && clanForm.controls['capacity'].touched) {
+      <div class="error">
+        Capacity must be at least 1.
+      </div>
+    }
 
     <button type="submit">Create Clan</button>
   </form>
@@ -34,9 +38,9 @@
 
   <h2>Clans</h2>
 
-  <app-search></app-search>
+  <app-search (searchChange)="onSearchChange($event)"></app-search>
 
-  @for (clan of filteredClans; track clan.id) {
+  @for (clan of filteredClans(); track clan.id) {
     <div class="clan-card">
 
       <div class="clan-info">

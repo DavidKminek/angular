@@ -46,7 +46,7 @@
 <h2>Players</h2>
 
 <ul class="player-list">
-  @for (p of filteredPlayers; track p.id) {
+  @for (p of filteredPlayers(); track p.id) {
     <li>
       <div class="player-card">
 
@@ -74,7 +74,7 @@
     </li>
   }
 
-  @if (!filteredPlayers.length) {
+  @if (!filteredPlayers().length) {
     <li>No players found.</li>
   }
 </ul>

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
 import { PlayerService, Player } from './players.service';
 import { ClansService } from '../clan/clan.service';
-import { Router } from '@angular/router';
 import { getPlayerLevel, playerLevels } from './level';
 import { SearchComponent } from '../search/search';
 
@@ -15,19 +16,39 @@ import { SearchComponent } from '../search/search';
   styleUrls: ['./players.css']
 })
 export class Players {
-  players: Player[] = [];
-  filteredPlayers: Player[] = [];
+
+  // --- DATA SIGNALS ---
+  players = signal<Player[]>([]);
+  search = signal('');
   playerLevels = playerLevels;
 
+  // --- SIGNAL FORM: Create Player ---
   playerForm = new FormGroup({
-    nickname: new FormControl('', [Validators.required, Validators.minLength(8)])
+    nickname: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(8)]
+    })
   });
 
+  // --- SIGNAL FORM: Filters ---
   filterForm = new FormGroup({
     levelTitle: new FormControl<string | null>(null)
   });
 
-  searchTerm: string = '';
+  // --- COMPUTED: filtered players ---
+  filteredPlayers = computed(() => {
+    const level = this.filterForm.controls['levelTitle'].value;
+    const search = this.search().toLowerCase();
+
+    return this.players().filter(p => {
+      const levelMatch =
+        !level || getPlayerLevel(p.xp ?? 0).level.title === level;
+
+      const searchMatch =
+        !search || p.nickname.toLowerCase().startsWith(search);
+
+      return levelMatch && searchMatch;
+    });
+  });
 
   constructor(
     private playerService: PlayerService,
@@ -35,34 +56,18 @@ export class Players {
     private router: Router
   ) {
     this.refreshPlayers();
+  }
 
-    this.filterForm.get('levelTitle')?.valueChanges.subscribe(() => this.applyFilter());
-    document.addEventListener('player:changed', () => this.refreshPlayers());
-    document.addEventListener('clan:changed', () => this.refreshPlayers());
+  refreshPlayers() {
+    this.players.set(this.playerService.getAll());
+  }
+
+  onSearchChange(value: string) {
+    this.search.set(value);
   }
 
   getPlayerLevelForPlayer(player: Player) {
     return getPlayerLevel(player.xp ?? 0);
-  }
-
-  refreshPlayers() {
-    this.players = this.playerService.getAll();
-    this.applyFilter();
-  }
-
-
-  applyFilter() {
-    const levelTitle = this.filterForm.get('levelTitle')?.value;
-    this.filteredPlayers = this.players.filter(p => {
-      const matchesLevel = !levelTitle || this.getPlayerLevelForPlayer(p).level.title === levelTitle;
-      const matchesSearch = !this.searchTerm || p.nickname.toLowerCase().startsWith(this.searchTerm.toLowerCase());
-      return matchesLevel && matchesSearch;
-    });
-  }
-
-  onSearchChange(value: string) {
-    this.searchTerm = value;
-    this.applyFilter();
   }
 
   getClanName(player: Player): string {
@@ -72,25 +77,33 @@ export class Players {
   }
 
   createPlayer() {
-    if (this.playerForm.invalid) return;
+    if (this.playerForm.invalid) {
+      this.playerForm.markAllAsTouched();
+      return;
+    }
+
+    const nickname = this.playerForm.controls['nickname'].value!;
+
     const newPlayer: Player = {
       id: Date.now(),
-      nickname: this.playerForm.value.nickname!,
+      nickname,
       xp: 0,
       activeQuests: [],
       completedQuests: []
     };
+
     this.playerService.addPlayer(newPlayer);
     this.playerForm.reset();
-    document.dispatchEvent(new CustomEvent('player:changed'));
+
+    this.refreshPlayers();
   }
 
   removePlayer(id: number) {
     this.playerService.removePlayer(id);
-    document.dispatchEvent(new CustomEvent('player:changed'));
+    this.refreshPlayers();
   }
 
-  goToDetails(playerId: number) {
-    this.router.navigate(['/players', playerId]);
+  goToDetails(id: number) {
+    this.router.navigate(['/players', id]);
   }
 }

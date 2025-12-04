@@ -1,54 +1,65 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators, NonNullableFormBuilder } from '@angular/forms';
+
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
 import { QuestsService } from './quest.service';
-import { Quest } from './quest-interface';
-import { SearchComponent } from '../search/search'; 
+import { SearchComponent } from '../search/search';
 
 @Component({
   selector: 'app-quests',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, SearchComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    SearchComponent
+  ],
   templateUrl: './quests.html',
   styleUrls: ['./quests.css']
 })
-export class Quests implements OnInit {
+export class Quests {
 
-  questForm = this.fb.group({
-    title: this.fb.control('', { validators: [Validators.required, Validators.minLength(8)] }),
-    description: this.fb.control('', { validators: [Validators.required] }),
-    xp: this.fb.control(0, { validators: [Validators.required] })
+  search = signal('');
+
+  questForm = new FormGroup({
+    title: new FormControl('', { 
+      validators: [Validators.required, Validators.minLength(8)],
+      nonNullable: true 
+    }),
+    description: new FormControl('', { 
+      validators: [Validators.required],
+      nonNullable: true 
+    }),
+    xp: new FormControl(0, { 
+      validators: [Validators.required],
+      nonNullable: true 
+    })
   });
 
-  filteredQuests: Quest[] = [];
+  filteredQuests = computed(() => {
+    const s = this.search().toLowerCase();
+    return this.questsService.quests().filter(q =>
+      q.title.toLowerCase().startsWith(s)
+    );
+  });
 
-  constructor(
-    public questsService: QuestsService,
-    private fb: NonNullableFormBuilder
-  ) {}
-
-  ngOnInit() {
-    this.filteredQuests = this.questsService.quests();
-  }
+  constructor(public questsService: QuestsService) {}
 
   onSearchChange(value: string | null) {
-    const search = (value ?? '').toLowerCase();
-    
-    this.filteredQuests = this.questsService
-      .quests()
-      .filter(q => q.title.toLowerCase().startsWith(search));
+    this.search.set(value ?? '');
   }
 
   createQuest() {
     if (this.questForm.invalid) return;
 
-    const { title, description, xp } = this.questForm.getRawValue();
+    const formValue = this.questForm.getRawValue();
 
     this.questsService.addCustomQuest({
-      title,
-      description,
-      xp
+      title: formValue.title,
+      description: formValue.description,
+      xp: formValue.xp
     });
 
     this.questForm.reset({
@@ -56,12 +67,9 @@ export class Quests implements OnInit {
       description: '',
       xp: 0
     });
-
-    this.filteredQuests = this.questsService.quests();
   }
 
   deleteQuest(id: number) {
     this.questsService.deleteQuest(id);
-    this.filteredQuests = this.questsService.quests();
   }
 }
