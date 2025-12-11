@@ -12,7 +12,7 @@
     </div>
 
     <h3>
-      Level: {{ levelInfo?.level.title }} ({{ levelInfo?.level.level }})
+      Level: {{ levelInfo?.level?.title }} ({{ levelInfo?.level?.level }})
     </h3>
 
     <div class="progress-bar">
@@ -22,7 +22,7 @@
     @if (levelInfo?.nextLevel) {
       <p>
         XP do ďalšieho levelu:
-        {{ (levelInfo?.nextLevel.xpRequired ?? 0) - player.xp }}
+        {{ (levelInfo?.nextLevel?.xpRequired ?? 0) - player.xp }}
       </p>
     }
 

@@ -1,5 +1,5 @@
 export interface Quest {
-  id: number;
+  id: string;
   title: string;
   description?: string; 
   xp: number;
