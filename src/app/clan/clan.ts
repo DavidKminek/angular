@@ -1,4 +1,6 @@
+//clan.ts
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { signal, computed } from '@angular/core';
@@ -13,7 +15,7 @@ import { SearchComponent } from '../search/search';
 @Component({
   selector: 'app-clans',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchComponent],
+  imports: [CommonModule, ReactiveFormsModule, SearchComponent],
   templateUrl: './clan.html',
   styleUrls: ['./clan.css']
 })
@@ -62,7 +64,7 @@ export class ClanPage {
     const value = this.clanForm.getRawValue();
 
     const newClan: Clan = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: value.name!,
       description: value.description!,
       capacity: value.capacity!,
@@ -75,7 +77,7 @@ export class ClanPage {
     this.refresh();
   }
 
-  deleteClan(clanId: number) {
+  deleteClan(clanId: string) {
     const clan = this.clansService.getById(clanId);
     if (!clan) return;
     if (!confirm(`Delete clan "${clan.name}"?`)) return;
@@ -88,7 +90,7 @@ export class ClanPage {
     this.refresh();
   }
 
-  openDetail(clanId: number) {
+  openDetail(clanId: string) {
     this.router.navigate(['/clan', clanId]);
   }
 

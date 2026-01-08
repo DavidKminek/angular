@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClansService } from './clan.service';
@@ -10,7 +10,7 @@ import { getPlayerLevel } from '../players/level';
 @Component({
   selector: 'app-clan-detail',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './clan-detail.html',
   styleUrls: ['./clan-detail.css']
 })
@@ -31,7 +31,7 @@ export class ClanDetailPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id') ?? '';
     this.clan = this.clansService.getById(id);
     if (!this.clan) return;
 
@@ -43,7 +43,7 @@ export class ClanDetailPage implements OnInit {
 
     const allPlayers = this.playerService.getAll();
     this.availablePlayers = allPlayers.filter(
-      p => !this.clansService.getAll().some(c => c.memberIds?.includes(p.id))
+      p => !this.clansService.getAll().some(c => c.memberIds.includes(p.id))
     );
   }
 
@@ -56,9 +56,7 @@ export class ClanDetailPage implements OnInit {
     const success = this.clansService.addPlayerToClan(this.clan.id, playerId);
     if (success) {
       this.playerService.setPlayerClan(playerId, this.clan.id);
-
       this.addPlayerForm.reset();
-
       this.refreshAvailablePlayers();
     } else {
       alert('Cannot add player: either clan is full or player already in another clan.');
@@ -79,7 +77,7 @@ export class ClanDetailPage implements OnInit {
     this.router.navigate(['/players', playerId]);
   }
 
-  getPlayerLevelForPlayer(player: Player) {
-    return getPlayerLevel(player.xp ?? 0);
+  getPlayerLevelForPlayer(player?: Player | { xp?: number }) {
+    return getPlayerLevel(player?.xp ?? 0);
   }
 }

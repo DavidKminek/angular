@@ -1,3 +1,4 @@
+//level.ts
 export interface PlayerLevel {
   level: number;
   xpRequired: number;

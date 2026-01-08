@@ -1,4 +1,4 @@
-// quest-detail.component.ts
+// quest-detail.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Quest } from './quest-interface';
@@ -19,7 +19,7 @@ export class QuestDetail implements OnInit {
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id'); // už string, nie number
+    const id = this.route.snapshot.paramMap.get('id'); 
     this.quest = this.questsService.getQuestById(id ?? '');
   }
 }

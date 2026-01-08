@@ -30,22 +30,19 @@
           style="cursor:pointer; text-decoration:underline; color:blue;"
           (click)="goToPlayerDetail(memberId)"
         >
-          {{
-            playerService.getPlayerById(memberId)?.nickname
-            || 'Unknown Player'
-          }}
+          {{ playerService.getPlayerById(memberId)?.nickname || 'Unknown Player' }}
 
-          (Level {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).level.level }}
-           - {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).level.title }})
+          (Level {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId) ?? { xp:0 }).level.level }}
+           - {{ getPlayerLevelForPlayer(playerService.getPlayerById(memberId) ?? { xp:0 }).level.title }})
         </span>
 
         <progress
-          [value]="getPlayerLevelForPlayer(playerService.getPlayerById(memberId)!).progress"
+          [value]="getPlayerLevelForPlayer(playerService.getPlayerById(memberId) ?? { xp:0 }).progress"
           max="100"
         ></progress>
 
         <button (click)="removePlayer(memberId)" style="margin-left:8px;">
-          Removererhgfgdf
+          Remove
         </button>
       </li>
     }

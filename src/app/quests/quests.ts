@@ -1,4 +1,4 @@
-// quests.component.ts – len malé úpravy
+// quests.ts 
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -25,7 +25,7 @@ export class Quests {
   filteredQuests = computed(() => {
     const s = this.search().toLowerCase();
     return this.questsService.quests().filter(q =>
-      q.title.toLowerCase().includes(s) // zmenil som startsWith → includes, lepšie hľadanie
+      q.title.toLowerCase().includes(s) 
     );
   });
 

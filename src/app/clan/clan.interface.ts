@@ -1,9 +1,7 @@
-// clan.interface.ts
 export interface Clan {
-  id: number;
+  id: string;
   name: string;
   description: string;
   capacity: number;
-  profileImage?: string;
-  memberIds?: number[]; 
+  memberIds: number[];
 }

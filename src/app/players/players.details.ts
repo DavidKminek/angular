@@ -1,4 +1,4 @@
-
+//players.details.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';

@@ -1,79 +1,59 @@
-import { Component, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
-
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+//players.ts
+import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { signal, computed } from '@angular/core';
 
 import { PlayerService, Player } from './players.service';
 import { ClansService } from '../clan/clan.service';
-import { getPlayerLevel, playerLevels } from './level';
+import { playerLevels, getPlayerLevel } from './level';
 import { SearchComponent } from '../search/search';
 
 @Component({
   selector: 'app-players',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, SearchComponent],
   templateUrl: './players.html',
-  styleUrls: ['./players.css']
 })
-export class Players {
-
-  // --- DATA SIGNALS ---
+export class PlayersPage {
   players = signal<Player[]>([]);
-  search = signal('');
-  playerLevels = playerLevels;
 
-  // --- SIGNAL FORM: Create Player ---
   playerForm = new FormGroup({
-    nickname: new FormControl('', {
-      validators: [Validators.required, Validators.minLength(8)]
-    })
+    nickname: new FormControl('', { validators: [Validators.required, Validators.minLength(8)], nonNullable: true })
   });
 
-  // --- SIGNAL FORM: Filters ---
   filterForm = new FormGroup({
     levelTitle: new FormControl<string | null>(null)
   });
 
-  // --- COMPUTED: filtered players ---
+  search = signal('');
+
+  playerLevels = playerLevels;
+
   filteredPlayers = computed(() => {
-    const level = this.filterForm.controls['levelTitle'].value;
-    const search = this.search().toLowerCase();
-
+    const levelTitle = this.filterForm.get('levelTitle')?.value;
+    const s = this.search().toLowerCase();
     return this.players().filter(p => {
-      const levelMatch =
-        !level || getPlayerLevel(p.xp ?? 0).level.title === level;
-
-      const searchMatch =
-        !search || p.nickname.toLowerCase().startsWith(search);
-
-      return levelMatch && searchMatch;
+      if (levelTitle) {
+        const lvl = getPlayerLevel(p.xp ?? 0);
+        if (lvl.level.title !== levelTitle) return false;
+      }
+      if (s && !p.nickname.toLowerCase().includes(s)) return false;
+      return true;
     });
   });
 
   constructor(
+    private router: Router,
     private playerService: PlayerService,
-    private clansService: ClansService,
-    private router: Router
+    private clansService: ClansService
   ) {
-    this.refreshPlayers();
+    this.refresh();
   }
 
-  refreshPlayers() {
+  refresh() {
     this.players.set(this.playerService.getAll());
-  }
-
-  onSearchChange(value: string) {
-    this.search.set(value);
-  }
-
-  getPlayerLevelForPlayer(player: Player) {
-    return getPlayerLevel(player.xp ?? 0);
-  }
-
-  getClanName(player: Player): string {
-    if (!player.clanId) return '-';
-    const clan = this.clansService.getById(player.clanId);
-    return clan ? clan.name : '-';
   }
 
   createPlayer() {
@@ -82,11 +62,10 @@ export class Players {
       return;
     }
 
-    const nickname = this.playerForm.controls['nickname'].value!;
-
+    const val = this.playerForm.getRawValue();
     const newPlayer: Player = {
       id: Date.now(),
-      nickname,
+      nickname: val.nickname!,
       xp: 0,
       activeQuests: [],
       completedQuests: []
@@ -94,16 +73,33 @@ export class Players {
 
     this.playerService.addPlayer(newPlayer);
     this.playerForm.reset();
-
-    this.refreshPlayers();
+    this.refresh();
   }
 
-  removePlayer(id: number) {
-    this.playerService.removePlayer(id);
-    this.refreshPlayers();
+  onSearchChange(value: string) {
+    this.search.set(value ?? '');
   }
 
   goToDetails(id: number) {
     this.router.navigate(['/players', id]);
+  }
+
+  removePlayer(id: number) {
+    this.playerService.removePlayer(id);
+    // Remove from clans
+    this.clansService.getAll().forEach(c => {
+      if (c.memberIds.includes(id)) this.clansService.removePlayerFromClan(c.id, id);
+    });
+    this.refresh();
+  }
+
+  getPlayerLevelForPlayer(p: Player) {
+    return getPlayerLevel(p.xp ?? 0);
+  }
+
+  getClanName(player: Player) {
+    if (!player.clanId) return '-';
+    const clan = this.clansService.getById(player.clanId);
+    return clan?.name ?? '-';
   }
 }

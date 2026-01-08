@@ -9,26 +9,25 @@ export class QuestsService {
   private firestore = inject(Firestore);
   private questsCollection = collection(this.firestore, 'quests');
 
-  // Signál, ktorý bude držať aktuálne questy
   private _quests = signal<Quest[]>([]);
 
-  // Automaticky sa naplní pri štarte appky
+  
   constructor() {
     this.loadQuests();
   }
 
-  // Načíta všetky questy z Firestore a uloží do signálu
+
   private loadQuests() {
     const quests$ = collectionData(this.questsCollection, { idField: 'id' }) as Observable<Quest[]>;
 
     quests$.pipe(
-      map(quests => quests.sort((a, b) => (b.id ?? '').localeCompare(a.id ?? ''))) // voliteľné triedenie
+      map(quests => quests.sort((a, b) => (b.id ?? '').localeCompare(a.id ?? ''))) 
     ).subscribe(quests => {
       this._quests.set(quests);
     });
   }
 
-  // Verejná metóda – rovnaká ako predtým
+ 
   quests() {
     return this._quests.asReadonly()();
   }
@@ -37,29 +36,26 @@ export class QuestsService {
     return this._quests().find(q => q.id === id);
   }
 
-  // Pridanie nového questu do Firestore
+
   async addCustomQuest(data: { title: string; description: string; xp: number }) {
     const newQuest: Omit<Quest, 'id'> = {
       title: data.title,
       description: data.description,
       xp: data.xp,
-      imageUrl: 'assets/default.png', // alebo môžeš nechať prázdne
+      imageUrl: 'assets/default.png', 
       difficulty: 'medium'
     };
 
     const docRef = await addDoc(this.questsCollection, newQuest);
-    // Signál sa aktualizuje automaticky cez subscription v loadQuests()
+    
   }
 
-  // Mazanie
   async deleteQuest(id: string) {
     if (!id) return;
     const questDoc = doc(this.firestore, 'quests', id);
     await deleteDoc(questDoc);
-    // opäť sa signál aktualizuje automaticky
   }
 
-  // Voliteľné – ak chceš manuálne pridať nejaký default quest (napr. pri prvom spustení)
   async addDefaultQuestsIfEmpty() {
     if (this._quests().length === 0) {
       const defaults = [
