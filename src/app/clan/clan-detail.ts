@@ -20,7 +20,7 @@ export class ClanDetailPage implements OnInit {
   availablePlayers: Player[] = [];
 
   addPlayerForm = new FormGroup({
-    playerId: new FormControl<number | null>(null, Validators.required)
+    playerId: new FormControl<string | null>(null, Validators.required)
   });
 
   constructor(
@@ -43,7 +43,7 @@ export class ClanDetailPage implements OnInit {
 
     const allPlayers = this.playerService.getAll();
     this.availablePlayers = allPlayers.filter(
-      p => !this.clansService.getAll().some(c => c.memberIds.includes(p.id))
+      p => (p.id != null) && !this.clansService.getAll().some(c => c.memberIds.includes(p.id!))
     );
   }
 
@@ -51,29 +51,31 @@ export class ClanDetailPage implements OnInit {
     if (!this.clan) return;
 
     const playerId = this.addPlayerForm.value.playerId!;
-    if (playerId == null) return;
+    if (!playerId) return;
 
-    const success = this.clansService.addPlayerToClan(this.clan.id, playerId);
-    if (success) {
-      this.playerService.setPlayerClan(playerId, this.clan.id);
-      this.addPlayerForm.reset();
-      this.refreshAvailablePlayers();
-    } else {
-      alert('Cannot add player: either clan is full or player already in another clan.');
-    }
+    this.clansService.addPlayerToClan(this.clan.id, playerId).then(success => {
+      if (success) {
+        this.playerService.setPlayerClan(playerId, this.clan!.id);
+        this.addPlayerForm.reset();
+        this.refreshAvailablePlayers();
+      } else {
+        alert('Cannot add player: either clan is full or player already in another clan.');
+      }
+    });
   }
 
-  removePlayer(playerId: number) {
+  removePlayer(playerId: string) {
     if (!this.clan) return;
 
-    const success = this.clansService.removePlayerFromClan(this.clan.id, playerId);
-    if (success) {
-      this.playerService.setPlayerClan(playerId, undefined);
-      this.refreshAvailablePlayers();
-    }
+    this.clansService.removePlayerFromClan(this.clan.id, playerId).then(success => {
+      if (success) {
+        this.playerService.setPlayerClan(playerId, undefined);
+        this.refreshAvailablePlayers();
+      }
+    });
   }
 
-  goToPlayerDetail(playerId: number) {
+  goToPlayerDetail(playerId: string) {
     this.router.navigate(['/players', playerId]);
   }
 

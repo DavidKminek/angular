@@ -35,7 +35,9 @@ export class PlayerDetail implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+
     this.player = this.playerService.getPlayerById(id);
 
     if (!this.player) return;
@@ -58,7 +60,7 @@ export class PlayerDetail implements OnInit {
     this.levelInfo = getPlayerLevel(totalXP);
   }
 
-  addQuest(): void {
+  async addQuest(): Promise<void> {
     if (!this.player || !this.selectedQuestId) return;
 
     const quest = this.questsService.getQuestById(this.selectedQuestId);
@@ -73,26 +75,26 @@ export class PlayerDetail implements OnInit {
       xp: quest.xp
     };
 
-    this.playerService.addQuest(this.player.id, stub);
+    await this.playerService.addQuest(this.player.id!, stub);
     this.refreshPlayer();
     this.selectedQuestId = undefined;
   }
 
-  removeQuest(questId: string): void {
+  async removeQuest(questId: string): Promise<void> {
     if (!this.player) return;
-    this.playerService.removeQuest(this.player.id, questId);
+    await this.playerService.removeQuest(this.player.id!, questId);
     this.refreshPlayer();
   }
 
-  completeQuest(questId: string): void {
+  async completeQuest(questId: string): Promise<void> {
     if (!this.player) return;
-    this.playerService.completeQuest(this.player.id, questId);
+    await this.playerService.completeQuest(this.player.id!, questId);
     this.refreshPlayer();
   }
 
-  reopenQuest(questId: string): void {
+  async reopenQuest(questId: string): Promise<void> {
     if (!this.player) return;
-    this.playerService.reopenQuest(this.player.id, questId);
+    await this.playerService.reopenQuest(this.player.id!, questId);
     this.refreshPlayer();
   }
 
@@ -103,7 +105,7 @@ export class PlayerDetail implements OnInit {
   }
 
   private refreshPlayer(): void {
-    if (this.player) {
+    if (this.player?.id) {
       this.player = this.playerService.getPlayerById(this.player.id);
       this.updateLevel();
     }

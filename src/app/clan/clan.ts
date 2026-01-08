@@ -22,7 +22,7 @@ import { SearchComponent } from '../search/search';
 export class ClanPage {
 
   // --- SIGNALS ---
-  clans = signal<Clan[]>([]);
+  clans = this.clansService.clans();
   search = signal('');
 
   filteredClans = computed(() => {
@@ -47,13 +47,9 @@ export class ClanPage {
     private clansService: ClansService,
     private playerService: PlayerService,
     private router: Router
-  ) {
-    this.refresh();
-  }
+  ) {}
 
-  refresh() {
-    this.clans.set(this.clansService.getAll());
-  }
+  // reactive clans signal comes from ClansService
 
   createClan() {
     if (this.clanForm.invalid) {
@@ -71,10 +67,9 @@ export class ClanPage {
       memberIds: []
     };
 
-    this.clansService.addClan(newClan);
-    this.clanForm.reset({ capacity: 5 });
-
-    this.refresh();
+    this.clansService.addClan(newClan).then(() => {
+      this.clanForm.reset({ capacity: 5 });
+    });
   }
 
   deleteClan(clanId: string) {
@@ -82,12 +77,11 @@ export class ClanPage {
     if (!clan) return;
     if (!confirm(`Delete clan "${clan.name}"?`)) return;
 
-    this.clansService.removeClan(clanId);
-    this.playerService.getAll().forEach(p => {
-      if (p.clanId === clanId) this.playerService.setPlayerClan(p.id, undefined);
+    this.clansService.removeClan(clanId).then(() => {
+      this.playerService.getAll().forEach(p => {
+        if (p.clanId === clanId && p.id) this.playerService.setPlayerClan(p.id, undefined);
+      });
     });
-
-    this.refresh();
   }
 
   openDetail(clanId: string) {

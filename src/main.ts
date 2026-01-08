@@ -8,6 +8,7 @@ import { App } from './app/app';
 // FIREBASE IMPORTS
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 
 // Nahraď svojím skutočným configom z Firebase konzoly!
 const firebaseConfig = {
@@ -28,5 +29,6 @@ bootstrapApplication(App, {
     // FIREBASE
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
   ]
 });

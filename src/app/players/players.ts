@@ -1,5 +1,5 @@
 //players.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -16,11 +16,11 @@ import { SearchComponent } from '../search/search';
   imports: [CommonModule, ReactiveFormsModule, RouterModule, SearchComponent],
   templateUrl: './players.html',
 })
-export class PlayersPage {
-  players = signal<Player[]>([]);
+export class PlayersPage implements OnInit {
+  players = this.playerService.players();
 
   playerForm = new FormGroup({
-    nickname: new FormControl('', { validators: [Validators.required, Validators.minLength(8)], nonNullable: true })
+    nickname: new FormControl('', { validators: [Validators.required, Validators.minLength(3)], nonNullable: true })
   });
 
   filterForm = new FormGroup({
@@ -48,49 +48,39 @@ export class PlayersPage {
     private router: Router,
     private playerService: PlayerService,
     private clansService: ClansService
-  ) {
-    this.refresh();
-  }
+  ) {}
 
-  refresh() {
-    this.players.set(this.playerService.getAll());
-  }
+  ngOnInit(): void {}
 
-  createPlayer() {
+  async createPlayer() {
     if (this.playerForm.invalid) {
       this.playerForm.markAllAsTouched();
       return;
     }
 
     const val = this.playerForm.getRawValue();
-    const newPlayer: Player = {
-      id: Date.now(),
-      nickname: val.nickname!,
-      xp: 0,
-      activeQuests: [],
-      completedQuests: []
-    };
-
-    this.playerService.addPlayer(newPlayer);
+    await this.playerService.addPlayer(val.nickname!);
     this.playerForm.reset();
-    this.refresh();
   }
 
   onSearchChange(value: string) {
     this.search.set(value ?? '');
   }
 
-  goToDetails(id: number) {
-    this.router.navigate(['/players', id]);
+  goToDetails(id?: string) {
+    if (id) {
+      this.router.navigate(['/players', id]);
+    }
   }
 
-  removePlayer(id: number) {
-    this.playerService.removePlayer(id);
-    // Remove from clans
+  async removePlayer(id?: string) {
+    if (!id) return;
+    // remove from clans (local signal) first
     this.clansService.getAll().forEach(c => {
       if (c.memberIds.includes(id)) this.clansService.removePlayerFromClan(c.id, id);
     });
-    this.refresh();
+
+    await this.playerService.removePlayer(id);
   }
 
   getPlayerLevelForPlayer(p: Player) {

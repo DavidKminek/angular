@@ -1,5 +1,8 @@
 //players.service.ts
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { Firestore, collection, collectionData, addDoc, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Observable, map } from 'rxjs';
+import { getPlayerLevel } from './level';
 
 export interface QuestStub {
   id: string;
@@ -9,9 +12,10 @@ export interface QuestStub {
 }
 
 export interface Player {
-  id: number;
+  id?: string;
   nickname: string;
   xp: number;
+  level?: number;
   clanId?: string;
   profileImage?: string;
   activeQuests?: QuestStub[];
@@ -20,84 +24,145 @@ export interface Player {
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
-  private _players = signal<Player[]>([
-    { id: 1, nickname: 'Alice', xp: 0, activeQuests: [], completedQuests: [] },
-    { id: 2, nickname: 'Bob', xp: 0, activeQuests: [], completedQuests: [] },
-    { id: 3, nickname: 'Cara', xp: 0, activeQuests: [], completedQuests: [] }
-  ]);
+  private firestore = inject(Firestore);
+  private playersCollection = collection(this.firestore, 'players');
+
+  private _players = signal<Player[]>([]);
+
+  constructor() {
+    this.loadPlayers();
+  }
+
+  private loadPlayers() {
+    const players$ = collectionData(this.playersCollection, { idField: 'id' }) as Observable<Player[]>;
+
+    players$.pipe(
+      map(players => players.sort((a, b) => (b.nickname ?? '').localeCompare(a.nickname ?? '')))
+    ).subscribe(players => {
+      console.log('[PlayerService] loadPlayers - received', players.length, 'players');
+      this._players.set(players);
+    });
+  }
+
+  players() {
+    return this._players.asReadonly();
+  }
 
   getAll(): Player[] {
     return this._players();
   }
 
-  getPlayerById(id: number): Player | undefined {
+  getPlayerById(id: string): Player | undefined {
     return this._players().find(p => p.id === id);
   }
 
-  addPlayer(player: Player) {
-    this._players.update(curr => [...curr, player]);
+  async addPlayer(nickname: string): Promise<string | undefined> {
+    const newPlayer: Player = {
+      nickname,
+      xp: 0,
+      level: 1,
+      activeQuests: [],
+      completedQuests: []
+    };
+
+    try {
+      const docRef = await addDoc(this.playersCollection, newPlayer);
+      console.log('[PlayerService] addPlayer - created', docRef.id);
+      return docRef.id;
+    } catch (err) {
+      console.error('[PlayerService] addPlayer - error', err);
+      return undefined;
+    }
   }
 
-  removePlayer(id: number) {
-    this._players.update(curr => curr.filter(p => p.id !== id));
+  async removePlayer(id: string) {
+    if (!id) return;
+    const playerDoc = doc(this.firestore, 'players', id);
+    await deleteDoc(playerDoc);
   }
 
-  addQuest(playerId: number, quest: QuestStub) {
-    this._players.update(players => players.map(p => {
-      if (p.id !== playerId) return p;
-      if ((p.activeQuests ?? []).some(q => q.id === quest.id)) return p;
+  async addQuest(playerId: string, quest: QuestStub) {
+    const player = this.getPlayerById(playerId);
+    if (!player) return;
 
-      return {
-        ...p,
-        activeQuests: [...(p.activeQuests ?? []), quest]
-      };
-    }));
+    if ((player.activeQuests ?? []).some(q => q.id === quest.id)) return;
+
+    const updatedQuests = [...(player.activeQuests ?? []), quest];
+    const playerDoc = doc(this.firestore, 'players', playerId);
+    await updateDoc(playerDoc, { activeQuests: updatedQuests });
   }
 
-  removeQuest(playerId: number, questId: string) {
-    this._players.update(players => players.map(p => {
-      if (p.id !== playerId) return p;
-      return {
-        ...p,
-        activeQuests: (p.activeQuests ?? []).filter(q => q.id !== questId),
-        completedQuests: (p.completedQuests ?? []).filter(q => q.id !== questId)
-      };
-    }));
+  async removeQuest(playerId: string, questId: string) {
+    const player = this.getPlayerById(playerId);
+    if (!player) return;
+
+    const newActive = (player.activeQuests ?? []).filter(q => q.id !== questId);
+    const newCompleted = (player.completedQuests ?? []).filter(q => q.id !== questId);
+
+    const totalXP = newCompleted.reduce((sum, q) => sum + (q.xp ?? 0), 0);
+    const levelInfo = getPlayerLevel(totalXP);
+
+    const playerDoc = doc(this.firestore, 'players', playerId);
+    await updateDoc(playerDoc, {
+      activeQuests: newActive,
+      completedQuests: newCompleted,
+      xp: totalXP,
+      level: levelInfo.level.level
+    });
   }
 
-  completeQuest(playerId: number, questId: string) {
-    this._players.update(players => players.map(p => {
-      if (p.id !== playerId) return p;
+  async completeQuest(playerId: string, questId: string) {
+    const player = this.getPlayerById(playerId);
+    if (!player) return;
 
-      const questIndex = (p.activeQuests ?? []).findIndex(q => q.id === questId);
-      if (questIndex === -1) return p;
+    const questIndex = (player.activeQuests ?? []).findIndex(q => q.id === questId);
+    if (questIndex === -1) return;
 
-      const quest = p.activeQuests![questIndex];
-      const newActive = p.activeQuests!.filter((_, i) => i !== questIndex);
-      const newCompleted = [...(p.completedQuests ?? []), quest];
+    const quest = player.activeQuests![questIndex];
+    const newActive = player.activeQuests!.filter((_, i) => i !== questIndex);
+    const newCompleted = [...(player.completedQuests ?? []), quest];
 
-      return { ...p, activeQuests: newActive, completedQuests: newCompleted };
-    }));
+    const totalXP = newCompleted.reduce((sum, q) => sum + (q.xp ?? 0), 0);
+    const levelInfo = getPlayerLevel(totalXP);
+
+    const playerDoc = doc(this.firestore, 'players', playerId);
+    await updateDoc(playerDoc, { activeQuests: newActive, completedQuests: newCompleted, xp: totalXP, level: levelInfo.level.level });
   }
 
-  reopenQuest(playerId: number, questId: string) {
-    this._players.update(players => players.map(p => {
-      if (p.id !== playerId) return p;
+  async reopenQuest(playerId: string, questId: string) {
+    const player = this.getPlayerById(playerId);
+    if (!player) return;
 
-      const compIndex = (p.completedQuests ?? []).findIndex(q => q.id === questId);
-      if (compIndex === -1) return p;
+    const compIndex = (player.completedQuests ?? []).findIndex(q => q.id === questId);
+    if (compIndex === -1) return;
 
-      const quest = p.completedQuests![compIndex];
-      const newCompleted = p.completedQuests!.filter((_, i) => i !== compIndex);
-      const newActive = [...(p.activeQuests ?? []), quest];
+    const quest = player.completedQuests![compIndex];
+    const newCompleted = player.completedQuests!.filter((_, i) => i !== compIndex);
+    const newActive = [...(player.activeQuests ?? []), quest];
 
-      return { ...p, activeQuests: newActive, completedQuests: newCompleted };
-    }));
+    const totalXP = newCompleted.reduce((sum, q) => sum + (q.xp ?? 0), 0);
+    const levelInfo = getPlayerLevel(totalXP);
+
+    const playerDoc = doc(this.firestore, 'players', playerId);
+    await updateDoc(playerDoc, { activeQuests: newActive, completedQuests: newCompleted, xp: totalXP, level: levelInfo.level.level });
   }
 
-  setPlayerClan(playerId: number, clanId?: string) {
-    this._players.update(players => players.map(p =>
-      p.id === playerId ? { ...p, clanId } : p
-    ));
+  async setPlayerClan(playerId: string, clanId?: string) {
+    const playerDoc = doc(this.firestore, 'players', playerId);
+    await updateDoc(playerDoc, { clanId });
+  }
+
+  async addDefaultPlayersIfEmpty() {
+    if (this._players().length === 0) {
+      const defaults = [
+        { nickname: 'Alice', xp: 150, level: 2, activeQuests: [], completedQuests: [] },
+        { nickname: 'Bob', xp: 80, level: 1, activeQuests: [], completedQuests: [] },
+        { nickname: 'Cara', xp: 250, level: 3, activeQuests: [], completedQuests: [] }
+      ];
+
+      for (const p of defaults) {
+        await addDoc(this.playersCollection, p);
+      }
+    }
   }
 }

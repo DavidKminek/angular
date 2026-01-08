@@ -3,5 +3,5 @@ export interface Clan {
   name: string;
   description: string;
   capacity: number;
-  memberIds: number[];
+  memberIds: string[];
 }

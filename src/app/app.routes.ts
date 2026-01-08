@@ -6,6 +6,7 @@ import { PlayersPage } from './players/players';
 import { PlayerDetail } from './players/players.details';
 import { ClanPage } from './clan/clan';
 import { ClanDetailPage } from './clan/clan-detail';
+import { LoginPage } from './login/login';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -15,4 +16,5 @@ export const routes: Routes = [
   { path: 'players/:id', component: PlayerDetail },
   { path: 'clan', component: ClanPage },
   { path: 'clan/:id', component: ClanDetailPage } 
+  ,{ path: 'login', component: LoginPage }
 ];

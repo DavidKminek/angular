@@ -1,0 +1,25 @@
+<div class="login-card">
+  <h2>Login</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <label>
+      Email
+      <input formControlName="email" type="email" />
+    </label>
+
+    <label>
+      Password
+      <input formControlName="password" type="password" />
+    </label>
+
+    @if (error()) {
+      <div class="error">{{ error() }}</div>
+    }
+
+    <button type="submit">Sign in</button>
+  </form>
+
+  <p>
+    Don't have an account? <a [routerLink]="['/']">Go home</a>
+  </p>
+</div>
