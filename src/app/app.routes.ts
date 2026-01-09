@@ -7,14 +7,15 @@ import { PlayerDetail } from './players/players.details';
 import { ClanPage } from './clan/clan';
 import { ClanDetailPage } from './clan/clan-detail';
 import { LoginPage } from './login/login';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'quests', component: Quests },
-  { path: 'quests/:id', component: QuestDetail },
-  { path: 'players', component: PlayersPage },
-  { path: 'players/:id', component: PlayerDetail },
-  { path: 'clan', component: ClanPage },
-  { path: 'clan/:id', component: ClanDetailPage } 
-  ,{ path: 'login', component: LoginPage }
+  { path: 'quests', component: Quests, canActivate: [AuthGuard] },
+  { path: 'quests/:id', component: QuestDetail, canActivate: [AuthGuard] },
+  { path: 'players', component: PlayersPage, canActivate: [AuthGuard] },
+  { path: 'players/:id', component: PlayerDetail, canActivate: [AuthGuard] },
+  { path: 'clan', component: ClanPage, canActivate: [AuthGuard] },
+  { path: 'clan/:id', component: ClanDetailPage, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginPage }
 ];

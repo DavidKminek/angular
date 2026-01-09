@@ -1,4 +1,7 @@
 <section class="home">
   <h2>Vitaj v Quest OverFlow!</h2>
   <p>Tu môžeš spravovať svoje dobrodružstvá, sledovať skúsenosti a plniť úlohy ako pravý hrdina!</p>
+  <div class="home-actions">
+    <button *ngIf="auth.isLoggedIn()" (click)="logout()">Odhlásiť sa</button>
+  </div>
 </section>
