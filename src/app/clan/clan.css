@@ -1,27 +1,7 @@
-.clan-page {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
+.clan-page{ max-width:720px; margin:auto; padding:20px }
+.form-card{ display:flex; flex-direction:column; gap:10px; background:var(--surface); padding:15px; border-radius:var(--radius); margin-bottom:20px; box-shadow:var(--shadow) }
 
-.form-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: #fafafa;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-}
-
-.form-card input, .form-card textarea {
-  width: 100%;
-  padding: 6px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
+.form-card input, .form-card textarea { width:100%; padding:8px; border-radius:8px; border:1px solid #e6e9f2 }
 
 .form-card button {
   align-self: flex-start;
@@ -33,26 +13,7 @@
   font-size: 13px;
 }
 
-.clan-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  border: 1px solid #ddd;
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
+.clan-card{ display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:12px; border-radius:10px; margin-bottom:10px; box-shadow:var(--shadow) }
+.clan-card .title{ font-weight:700; font-size:16px }
 
-.clan-card .title {
-  font-weight: bold;
-  font-size: 16px;
-}
-
-button.danger {
-  background: #d9534f;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-}
+button.danger{ background:var(--danger); color:#fff; border:none; padding:6px 10px; border-radius:8px }

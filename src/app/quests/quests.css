@@ -3,44 +3,22 @@ h2 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #222;
+  color: var(--primary);
 }
 
 p {
   font-size: 1rem;
-  color: #000000;
+  color: var(--muted);
   margin-bottom: 1rem;
 }
 
 
-button {
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: background 0.2s ease;
-}
-
-button.bg-green-500 {
-  background-color: #22c55e;
-  color: white;
-}
-
-button.bg-green-500:hover {
-  background-color: #16a34a;
-}
-
-button.bg-red-500 {
-  background-color: #ef4444;
-  color: white;
-}
-
-button.bg-red-500:hover {
-  background-color: #b91c1c;
-}
-
-button.rounded {
-  border-radius: 0.5rem;
-}
+button { font-weight:600; cursor:pointer; border:none; transition:background .2s ease }
+button.bg-green-500{ background:var(--success); color:#fff }
+button.bg-green-500:hover{ filter:brightness(.95) }
+button.bg-red-500{ background:var(--danger); color:#fff }
+button.bg-red-500:hover{ filter:brightness(.95) }
+button.rounded{ border-radius:8px }
 
 
 .grid {
@@ -95,14 +73,7 @@ div.bg-gray-800 button {
   padding: 0.25rem 0.5rem;
   font-size: 0.9rem;
 }
-.create-form {
-  background: #1f2937; /* gray-800 */
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
+.create-form { background:var(--surface); padding:20px; border-radius:var(--radius); margin-bottom:24px; color:inherit; box-shadow:var(--shadow) }
 
 .create-form h3 {
   font-size: 1.3rem;
@@ -110,18 +81,7 @@ div.bg-gray-800 button {
   font-weight: 600;
 }
 
-.create-form input,
-.create-form textarea {
-  width: 100%;
-  background: #111827; /* gray-900 */
-  border: 1px solid #374151; /* gray-700 */
-  padding: 10px;
-  border-radius: 8px;
-  color: white;
-  margin-bottom: 12px;
-  font-size: 0.95rem;
-  transition: border 0.2s, background 0.2s;
-}
+.create-form input, .create-form textarea { width:100%; background:transparent; border:1px solid #e6e9f2; padding:10px; border-radius:8px; color:inherit; margin-bottom:12px; font-size:.95rem; transition:box-shadow .15s, border-color .15s }
 
 .create-form input:focus,
 .create-form textarea:focus {
@@ -130,15 +90,7 @@ div.bg-gray-800 button {
   outline: none;
 }
 
-.create-btn {
-  width: 100%;
-  background: #10b981; /* emerald-500 */
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: 0.2s;
-  color: white;
-}
+.create-btn { width:100%; background:var(--success); padding:10px; border-radius:8px; font-weight:600; color:#fff }
 
 .create-btn:disabled {
   background: #374151; /* gray-700 */

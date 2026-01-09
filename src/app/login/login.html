@@ -1,5 +1,5 @@
 <div class="login-card">
-  <h2>Login</h2>
+  <h2>{{ isRegister() ? 'Register' : 'Login' }}</h2>
 
   <form [formGroup]="loginForm" (ngSubmit)="submit()">
     <label>
@@ -16,10 +16,12 @@
       <div class="error">{{ error() }}</div>
     }
 
-    <button type="submit">Sign in</button>
+    <button type="submit">{{ isRegister() ? 'Create account' : 'Sign in' }}</button>
   </form>
 
   <p>
-    Don't have an account? <a [routerLink]="['/']">Go home</a>
+    <a (click)="toggleMode()" style="cursor:pointer">
+      {{ isRegister() ? 'Already have an account? Sign in' : "Don't have an account? Register" }}
+    </a>
   </p>
 </div>

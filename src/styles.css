@@ -1,23 +1,68 @@
-/* You can add global styles to this file, and also import other style files */
-* {
-  margin: 0;
-  padding: 0;
+/* Global styles and theme variables */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(180deg,#f6f7ff 0%, #eef2ff 60%);
+  color:#222;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-body {
-  font-family: 'Be Vietnam Pro', sans-serif;
-}
-:root {
-  --primary-color: #605DC8;
-  --secondary-color: #8B89E6;
-  --accent-color: #e8e7fa;
-  --shadow-color: #E8E8E8;
+:root{
+  --bg:#f6f7ff;
+  --surface:#ffffff;
+  --primary:#5b53d6;
+  --primary-600:#4a3fc2;
+  --accent:#8f8bf7;
+  --muted:#6b7280;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --radius:10px;
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 6px 18px rgba(33,33,68,0.08);
 }
 
-button.primary {
-  padding: 10px;
-  border: solid 1px var(--primary-color);
-  background: var(--primary-color);
-  color: white;
-  border-radius: 8px;
+/* Layout container used across app */
+.container{
+  max-width:1100px;
+  margin:24px auto;
+  padding:0 20px;
 }
+
+/* Generic card */
+.card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600;
+}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-600)}
+.btn-ghost{background:transparent;color:var(--primary)}
+
+/* Form controls */
+input,select,textarea{font:inherit;padding:10px;border:1px solid #e6e9f2;border-radius:8px}
+input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 4px rgba(91,83,214,0.12);border-color:var(--primary)}
+
+/* Header spacing helper */
+.app-header{max-width:1100px;margin:18px auto;padding:12px}
+
+/* Small utilities */
+.muted{color:var(--muted)}
+.right{margin-left:auto}
+
+@media (max-width:640px){
+  .container{padding:0 14px}
+  .menu a{margin:0 8px}
+}
+

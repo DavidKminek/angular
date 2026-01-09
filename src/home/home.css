@@ -1,2 +1,12 @@
+/* Home page styles */
+.home{display:flex;flex-direction:column;gap:18px}
+.home h2{font-size:28px;color:var(--primary);margin-bottom:6px}
+.home p{color:var(--muted);line-height:1.5}
+.home .home-actions{margin-top:10px}
+.home .home-actions button{min-width:150px}
+
+.hero{background:linear-gradient(90deg, rgba(91,83,214,0.06), rgba(143,139,247,0.04));padding:24px;border-radius:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px}
+
 
     

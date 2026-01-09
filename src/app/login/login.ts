@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +14,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 })
 export class LoginPage {
   error = signal<string | null>(null);
+  isRegister = signal<boolean>(false);
 
   loginForm = new FormGroup({
     email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true }),
@@ -30,11 +31,20 @@ export class LoginPage {
 
     const { email, password } = this.loginForm.getRawValue();
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      if (this.isRegister()) {
+        await createUserWithEmailAndPassword(this.auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(this.auth, email, password);
+      }
       this.error.set(null);
       await this.router.navigate(['/']);
     } catch (err: any) {
       this.error.set(err?.message ?? 'Sign in failed');
     }
+  }
+
+  toggleMode() {
+    this.isRegister.update(v => !v);
+    this.error.set(null);
   }
 }

@@ -21,14 +21,7 @@
   color: white;
   border-radius: 8px;
   margin-bottom: 12px;
-}
-
-.player-form input:focus {
-  border-color: #3b82f6;
-  outline: none;
-}
-
-.create-btn {
+  .player-form{ background:var(--surface); padding:20px; margin-bottom:20px; border-radius:var(--radius); color:inherit; box-shadow:var(--shadow) }
   width: 100%;
   background: #10b981;
   padding: 10px;
@@ -42,6 +35,8 @@
   background: #374151;
   color: #9ca3af;
 }
+  .player-form input{ width:100%; background:transparent; border:1px solid #e6e9f2; padding:10px; border-radius:8px; margin-bottom:12px }
+  .player-form input:focus{ outline:none; box-shadow:0 0 0 4px rgba(91,83,214,0.08); border-color:var(--primary) }
 
 .create-btn:not(:disabled):hover {
   background: #059669;
@@ -49,15 +44,7 @@
 
 .error {
   color: #f87171;
-  font-size: 0.85rem;
-  margin-top: -8px;
-  margin-bottom: 10px;
-}
-
-/* Player list styling */
-.player-list {
-  list-style: none;
-  padding: 0;
+  .create-btn{ width:100%; background:var(--success); padding:10px; border-radius:8px; font-weight:600; color:#fff }
 }
 
 .player-card {
@@ -67,21 +54,14 @@
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  .player-card{ background:var(--surface); padding:15px; margin-bottom:10px; border-radius:10px; display:flex; flex-direction:column; color:inherit; box-shadow:var(--shadow) }
   color: white;
 }
 
 .actions {
   margin-top: 10px;
-  display: flex;
-  gap: 10px;
-}
-
-.actions button {
-  background: #3b82f6;
-  padding: 6px 10px;
-  border-radius: 6px;
-  color: white;
-  border: none;
+  .actions button{ background:var(--primary); padding:6px 10px; border-radius:6px; color:#fff; border:none }
+  .actions .danger{ background:var(--danger) }
 }
 
 .actions .danger {

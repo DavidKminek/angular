@@ -1,27 +1,18 @@
-.app-header {
-  background-color: #282c34;
-  color: white;
-  padding: 1rem;
-  text-align: center;
-  border-radius: 8px;
+.app-header{
+  display:flex;align-items:center;gap:16px;padding:12px;border-radius:12px;background:linear-gradient(90deg,var(--surface), rgba(255,255,255,0.6));box-shadow:var(--shadow);
 }
 
-.menu {
-  margin-top: 0.5rem;
-}
+.app-header h1{font-size:20px;font-weight:700;color:var(--primary);margin:0}
 
-.menu a {
-  color: white;
-  text-decoration: none;
-  margin: 0 1rem;
-  font-weight: bold;
-  transition: color 0.2s ease-in-out;
-}
+.menu{display:flex;align-items:center;gap:12px;margin-left:auto}
 
-.menu a:hover {
-  color: #61dafb;
-}
+.menu a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;font-weight:600;transition:all .15s}
+.menu a:hover{background:var(--glass);color:var(--primary)}
+.menu a.active{background:linear-gradient(90deg,var(--accent), rgba(91,83,214,0.12));color:var(--primary)}
 
-.menu a.active {
-  text-decoration: underline;
+.menu .logout{background:transparent;border:1px solid rgba(91,83,214,0.12);padding:8px 10px;border-radius:8px;color:var(--primary);cursor:pointer}
+
+@media (max-width:640px){
+  .app-header{flex-direction:column;align-items:flex-start}
+  .menu{width:100%;justify-content:flex-start;overflow:auto}
 }

@@ -7,12 +7,7 @@
   color: #1f2937;
 }
 
-.player-detail {
-  background-color: #f9fafb;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+.player-detail{ background:var(--surface); border-radius:var(--radius); padding:2rem; box-shadow:var(--shadow) }
 
 .player-detail h2 {
   font-size: 2rem;
@@ -50,17 +45,7 @@ ul {
   margin: 0;
 }
 
-ul li {
-  background-color: #ffffff;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+.player-detail ul li{ background:var(--surface); padding:.75rem 1rem; border-radius:.75rem; margin-bottom:.5rem; display:flex; justify-content:space-between; align-items:center; box-shadow:var(--shadow); transition:transform .2s, box-shadow .2s }
 
 ul li:hover {
   transform: translateY(-2px);
